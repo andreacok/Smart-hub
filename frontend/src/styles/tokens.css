@@ -1,7 +1,11 @@
 /*
  * Design tokens Smart Hub — da SMARTHUB_UI_MOCKUP.md.
- * Palette neutra scura. L'accent blu indica solo ciò che è attivo, selezionato o interattivo.
+ * Palette neutra. L'accent blu indica solo ciò che è attivo, selezionato o interattivo.
  * I nomi "lamp" e "plug" sono rimasti per non toccare tutti i file: ora indicano lo stato acceso.
+ *
+ * Tema: di default segue il sistema operativo (prefers-color-scheme).
+ * L'utente può forzare il tema con data-theme="light" | "dark" su <html> (vedi lib/theme.ts).
+ * Il tema scuro è il default: ogni regola chiara è sotto un selettore più specifico.
  */
 :root {
   color-scheme: dark;
@@ -36,6 +40,15 @@
   --warn: #f4c45e;
   --focus: #6ca8ff;
 
+  /* Testo sopra le fotografie: il velo sotto è sempre scuro, quindi il testo resta chiaro in ogni tema. */
+  --on-photo: #f4f5f6;
+  --on-photo-muted: #d3d8de;
+
+  /* Ombre e profondità */
+  --shadow-card: none;
+  --shadow-float: 0 18px 40px -16px rgb(0 0 0 / 0.75);
+  --shadow-lamp: 0 0 0 1px rgb(245 178 92 / 0.28), 0 12px 32px -18px var(--light-glow);
+
   /* Tipografia */
   --font: 'Onest Variable', 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --text-xs: 0.8125rem;      /* 13px: caption */
@@ -61,13 +74,78 @@
   --radius-l: 24px;
   --radius-pill: 999px;
 
-  --shadow-card: none;
-  --shadow-float: 0 18px 40px -16px rgb(0 0 0 / 0.75);
-  --shadow-lamp: 0 0 0 1px rgb(245 178 92 / 0.28), 0 12px 32px -18px var(--light-glow);
-
   --touch: 56px;
   --rail-width: 220px;
   --bottom-nav-height: 0px;
+}
+
+/*
+ * Tema chiaro. Due selettori: quando il sistema è chiaro e nessun tema è forzato,
+ * oppure quando l'utente sceglie "Chiaro" esplicitamente. Le dimensioni non cambiano.
+ * I contrasti testo/sfondo sono pensati per restare sopra 4.5:1 sulle superfici.
+ */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+
+    --night: #eef0f2;
+    --surface: #ffffff;
+    --surface-raised: #e7eaee;
+    --surface-hover: #dde1e6;
+    --surface-sunken: #e2e6eb;
+    --line: rgb(17 24 39 / 0.09);
+    --text: #14171a;
+    --text-muted: #56606a;
+    --text-faint: #6b747e;
+
+    --accent: #2563d9;
+
+    --light: #c77a12;
+    --light-soft: #8f5408;
+    --light-tint: rgb(199 122 18 / 0.1);
+    --light-glow: rgb(199 122 18 / 0.28);
+    --plug: #1f8a4c;
+    --on-plug: #ffffff;
+    --heat: #c4572a;
+    --ok: #1f8a4c;
+    --alert: #c93c3c;
+    --warn: #9a6400;
+    --focus: #2563d9;
+
+    --shadow-float: 0 18px 40px -20px rgb(20 30 45 / 0.28);
+    --shadow-lamp: 0 0 0 1px rgb(199 122 18 / 0.35), 0 12px 32px -18px var(--light-glow);
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --night: #eef0f2;
+  --surface: #ffffff;
+  --surface-raised: #e7eaee;
+  --surface-hover: #dde1e6;
+  --surface-sunken: #e2e6eb;
+  --line: rgb(17 24 39 / 0.09);
+  --text: #14171a;
+  --text-muted: #56606a;
+  --text-faint: #6b747e;
+
+  --accent: #2563d9;
+
+  --light: #c77a12;
+  --light-soft: #8f5408;
+  --light-tint: rgb(199 122 18 / 0.1);
+  --light-glow: rgb(199 122 18 / 0.28);
+  --plug: #1f8a4c;
+  --on-plug: #ffffff;
+  --heat: #c4572a;
+  --ok: #1f8a4c;
+  --alert: #c93c3c;
+  --warn: #9a6400;
+  --focus: #2563d9;
+
+  --shadow-float: 0 18px 40px -20px rgb(20 30 45 / 0.28);
+  --shadow-lamp: 0 0 0 1px rgb(199 122 18 / 0.35), 0 12px 32px -18px var(--light-glow);
 }
 
 @media (max-width: 760px) {

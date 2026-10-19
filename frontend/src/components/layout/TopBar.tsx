@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useNow } from '../../hooks/useNow';
 import { formatTemperature } from '../../lib/format';
+import { ThemeToggle } from './ThemeToggle';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
@@ -39,6 +40,7 @@ export function TopBar({ eyebrow, title, leading, temperature, offline = false, 
         )}
         <time className={styles.time} dateTime={now.toISOString()}>{time}</time>
         {temperature !== undefined && <span className={styles.temperature}>{formatTemperature(temperature)}</span>}
+        <ThemeToggle />
       </div>
     </header>
   );

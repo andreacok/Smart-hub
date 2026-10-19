@@ -4,6 +4,7 @@ import { EmptyState, ErrorState, LoadingState } from '../components/common/PageS
 import { useExecuteScene } from '../hooks/useActions';
 import { useHome } from '../hooks/useHome';
 import type { Scene } from '../api/types';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
 
 /** Icone delle scene: il backend invia un nome generico, qui lo traduciamo in un'icona. */
@@ -35,6 +36,7 @@ export function ScenesPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>Scene</h1>
         <p className={styles.subtitle}>Una scena applica più comandi insieme, con un solo tocco.</p>
+              <ThemeToggle className={styles.themeSwitch} />
       </header>
       {scenes.length === 0 ? (
         <EmptyState title="Nessuna scena" message="Crea le scene nell'app SmartThings: compariranno qui." />

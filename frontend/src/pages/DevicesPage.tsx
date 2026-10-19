@@ -3,6 +3,7 @@ import { DeviceSection } from '../components/room/DeviceSection';
 import { useDevices } from '../hooks/useDevices';
 import { groupDevices } from '../lib/grouping';
 import { pluralize } from '../lib/format';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
 
 /** Tutti i dispositivi della casa, raggruppati per tipo come nella Room View. */
@@ -24,6 +25,7 @@ export function DevicesPage() {
         <p className={styles.subtitle}>
           {pluralize(devices.length, 'dispositivo', 'dispositivi')} · {online} online
         </p>
+              <ThemeToggle className={styles.themeSwitch} />
       </header>
       {groups.length === 0 ? (
         <EmptyState title="Nessun dispositivo" message="Collega dispositivi nell'app SmartThings: compariranno qui." />

@@ -10,7 +10,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-l);
   background: var(--surface-sunken);
-  color: var(--text);
+  color: var(--on-photo);
   transition: border-color 150ms ease, transform 80ms ease;
 }
 
@@ -98,7 +98,7 @@
   flex-direction: column;
   gap: 2px;
   font-size: var(--text-s);
-  color: var(--text-muted);
+  color: var(--on-photo-muted);
 }
 
 .badges {

@@ -9,6 +9,17 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Smart Hub</title>
+    <script>
+      /* Tema salvato applicato prima del primo paint, così non compare un lampo del tema sbagliato. */
+      try {
+        var storedTheme = localStorage.getItem('smarthub.theme');
+        if (storedTheme === 'light' || storedTheme === 'dark') {
+          document.documentElement.dataset.theme = storedTheme;
+        }
+      } catch (error) {
+        /* Storage non disponibile: resta il tema del sistema operativo. */
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

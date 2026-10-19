@@ -59,7 +59,7 @@
   border-radius: 50%;
   background: rgb(17 19 21 / 0.55);
   backdrop-filter: blur(10px);
-  color: var(--text);
+  color: var(--on-photo);
 }
 
 .back:hover {
@@ -80,7 +80,7 @@
   border-radius: 50%;
   background: rgb(17 19 21 / 0.55);
   backdrop-filter: blur(10px);
-  color: var(--text);
+  color: var(--on-photo);
 }
 
 .edit:hover {
@@ -94,6 +94,7 @@
 }
 
 .title {
+  color: var(--on-photo);
   font-size: var(--text-2xl);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -103,7 +104,7 @@
 
 .facts {
   margin-top: var(--space-2);
-  color: var(--text);
+  color: var(--on-photo);
   font-size: var(--text-s);
   opacity: 0.85;
 }
@@ -120,6 +121,7 @@
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
+  color: var(--on-photo);
   background: rgb(17 19 21 / 0.6);
   backdrop-filter: blur(10px);
 }
@@ -133,7 +135,7 @@
 }
 
 .climateLabel {
-  color: var(--text-muted);
+  color: var(--on-photo-muted);
   font-size: var(--text-xs);
 }
 
