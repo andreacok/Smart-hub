@@ -9,7 +9,6 @@ import com.smarthub.dto.HomeDto;
 import com.smarthub.dto.LocationDto;
 import com.smarthub.dto.SceneDto;
 import com.smarthub.model.Device;
-import com.smarthub.model.DeviceType;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -59,6 +58,6 @@ public class HomeService {
 
     /** Spegne tutte le luci della casa. */
     public ActionResultDto allLightsOff() {
-        return roomService.turnOff(d -> d.type() == DeviceType.LIGHT && HomeAggregator.isActive(d));
+        return roomService.turnOff(d -> d.deviceType().isLight() && HomeAggregator.isActive(d));
     }
 }

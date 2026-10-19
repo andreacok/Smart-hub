@@ -1,4 +1,5 @@
 import type { Device, DeviceCommand, DeviceState, OpenState } from '../api/types';
+import { deviceKind } from './deviceKind';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
@@ -60,6 +61,6 @@ export function isActive(device: Device): boolean {
     device.online &&
     device.capabilities.includes('POWER') &&
     device.state.power === 'ON' &&
-    (device.type === 'LIGHT' || device.type === 'SWITCH')
+    (deviceKind(device) === 'LIGHT' || deviceKind(device) === 'SWITCH')
   );
 }

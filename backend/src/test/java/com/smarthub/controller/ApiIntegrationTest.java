@@ -44,7 +44,7 @@ class ApiIntegrationTest {
         mvc.perform(get("/api/rooms/salotto"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.room.name").value("Salotto"))
-                .andExpect(jsonPath("$.devices[0].type").value("LIGHT"));
+                .andExpect(jsonPath("$.devices[0].deviceType").value("LIGHT"));
     }
 
     @Test

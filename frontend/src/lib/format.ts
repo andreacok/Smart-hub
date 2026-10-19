@@ -1,4 +1,5 @@
 import type { Device, OpenState } from '../api/types';
+import { deviceKind, deviceTypeLabel } from './deviceKind';
 
 const numberFormat = new Intl.NumberFormat('it-IT', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 
@@ -72,7 +73,7 @@ export function relativeTime(iso: string | undefined, now: Date = new Date()): s
 export function deviceStatusText(device: Device): string {
   const s = device.state;
   if (!device.online) return 'Non raggiungibile';
-  switch (device.type) {
+  switch (deviceKind(device)) {
     case 'LIGHT':
       if (s.power === 'OFF') return 'Spenta';
       return s.brightness !== undefined && device.capabilities.includes('DIMMER') ? `Accesa, ${s.brightness}%` : 'Accesa';
@@ -85,10 +86,21 @@ export function deviceStatusText(device: Device): string {
       return `${thermostatModeLabel(s.thermostatMode)}, ${formatTemperature(s.targetTemperature)}`;
     case 'CAMERA':
       return s.power === 'OFF' ? 'Spenta' : 'Attiva';
+    case 'GENERIC': {
+      // Tipo sempre visibile: un frigorifero resta un frigorifero anche senza una card dedicata.
+      const detail = genericDetail(device);
+      return detail ? `${deviceTypeLabel(device)} · ${detail}` : deviceTypeLabel(device);
+    }
     default:
-      if (s.contact) return s.contact === 'OPEN' ? 'Aperta' : 'Chiusa';
-      if (s.motion !== undefined) return s.motion ? 'Movimento rilevato' : 'Nessun movimento';
-      if (s.temperature !== undefined) return formatTemperature(s.temperature, s.temperatureUnit);
-      return s.power === 'ON' ? 'Acceso' : s.power === 'OFF' ? 'Spento' : '';
+      return genericDetail(device);
   }
+}
+
+/** Dettaglio dello stato di un dispositivo senza card dedicata: contatto, movimento, temperatura, accensione. */
+function genericDetail(device: Device): string {
+  const s = device.state;
+  if (s.contact) return s.contact === 'OPEN' ? 'Aperta' : 'Chiusa';
+  if (s.motion !== undefined) return s.motion ? 'Movimento rilevato' : 'Nessun movimento';
+  if (s.temperature !== undefined) return formatTemperature(s.temperature, s.temperatureUnit);
+  return s.power === 'ON' ? 'Acceso' : s.power === 'OFF' ? 'Spento' : '';
 }

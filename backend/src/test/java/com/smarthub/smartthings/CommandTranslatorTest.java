@@ -45,11 +45,11 @@ class CommandTranslatorTest {
     void shutterCommandsPreferWindowShade() {
         StDevice shutter = DeviceNormalizerTest.device("s", "Blind", "windowShade", "windowShadeLevel");
         assertEquals(List.of(StCommand.of("windowShade", "open")),
-                translator.translate(shutter, DeviceType.SHUTTER, new DeviceCommand(CommandType.OPEN, null)));
+                translator.translate(shutter, DeviceType.BLIND, new DeviceCommand(CommandType.OPEN, null)));
         assertEquals(List.of(StCommand.of("windowShade", "pause")),
-                translator.translate(shutter, DeviceType.SHUTTER, new DeviceCommand(CommandType.STOP, null)));
+                translator.translate(shutter, DeviceType.BLIND, new DeviceCommand(CommandType.STOP, null)));
         assertEquals(List.of(StCommand.of("windowShadeLevel", "setShadeLevel", 40)),
-                translator.translate(shutter, DeviceType.SHUTTER, new DeviceCommand(CommandType.SET_POSITION, "40")));
+                translator.translate(shutter, DeviceType.BLIND, new DeviceCommand(CommandType.SET_POSITION, "40")));
     }
 
     @Test

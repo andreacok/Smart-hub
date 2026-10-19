@@ -1,4 +1,5 @@
 import type { Device, Home, RoomDetail, RoomSummary } from '../api/types';
+import { deviceKind } from '../lib/deviceKind';
 import { isActive } from '../lib/predict';
 
 /** Sostituisce un dispositivo nel dettaglio stanza. */
@@ -13,8 +14,8 @@ export function replaceDeviceInHome(home: Home | undefined, before: Device, afte
   if (!home) return home;
   const wasActive = isActive(before);
   const nowActive = isActive(after);
-  const wasLightOn = before.type === 'LIGHT' && before.online && before.state.power === 'ON';
-  const nowLightOn = after.type === 'LIGHT' && after.online && after.state.power === 'ON';
+  const wasLightOn = deviceKind(before) === 'LIGHT' && before.online && before.state.power === 'ON';
+  const nowLightOn = deviceKind(after) === 'LIGHT' && after.online && after.state.power === 'ON';
   const activeDelta = Number(nowActive) - Number(wasActive);
   const lightDelta = Number(nowLightOn) - Number(wasLightOn);
 
@@ -39,8 +40,8 @@ export function replaceDeviceInHome(home: Home | undefined, before: Device, afte
 
 function adjustRoomSummary(summary: RoomSummary, before: Device[], after: Device[]): RoomSummary {
   const lightsOn = (list: Device[]) =>
-    list.filter((d) => d.type === 'LIGHT' && d.online && d.state.power === 'ON').length;
-  const shutters = after.filter((d) => d.type === 'SHUTTER' && d.state.position !== undefined);
+    list.filter((d) => deviceKind(d) === 'LIGHT' && d.online && d.state.power === 'ON').length;
+  const shutters = after.filter((d) => deviceKind(d) === 'SHUTTER' && d.state.position !== undefined);
   const shutterPosition = shutters.length
     ? Math.round(shutters.reduce((sum, d) => sum + (d.state.position ?? 0), 0) / shutters.length)
     : summary.shutterPosition;

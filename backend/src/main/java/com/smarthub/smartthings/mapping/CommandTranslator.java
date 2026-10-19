@@ -47,7 +47,7 @@ public class CommandTranslator {
                 if (device.hasCapability(WINDOW_SHADE_LEVEL)) {
                     yield List.of(StCommand.of(WINDOW_SHADE_LEVEL, "setShadeLevel", position));
                 }
-                if (type == DeviceType.SHUTTER && device.hasCapability(SWITCH_LEVEL)) {
+                if (type.isShutter() && device.hasCapability(SWITCH_LEVEL)) {
                     yield List.of(StCommand.of(SWITCH_LEVEL, "setLevel", position));
                 }
                 throw unsupported(command);
