@@ -4,6 +4,8 @@
 server:
   port: ${SERVER_PORT:8080}
   shutdown: graceful
+  # dietro Nginx (Docker) usa gli header X-Forwarded-* per costruire link e redirect corretti
+  forward-headers-strategy: framework
 
 spring:
   application:
@@ -50,6 +52,17 @@ smartthings:
   # Esempio di override del tipo di un dispositivo (relè "Switch" che comanda una luce):
   # device-type-overrides:
   #   "1a2b3c4d-....": LIGHT
+
+# Documentazione API: Swagger UI su /swagger-ui.html, specifica OpenAPI su /v3/api-docs
+springdoc:
+  api-docs:
+    enabled: ${SMARTHUB_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${SMARTHUB_API_DOCS_ENABLED:true}
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+  paths-to-match: /api/**
 
 management:
   endpoints:

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.net.URI;
 import java.security.SecureRandom;
@@ -34,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ol>
  */
 @RestController
+@Tag(name = "Autenticazione SmartThings")
 @RequestMapping("/api/auth/smartthings")
 public class SmartThingsAuthController {
 
@@ -49,6 +52,7 @@ public class SmartThingsAuthController {
         this.cache = cache;
     }
 
+    @Operation(summary = "Stato dell'autorizzazione OAuth")
     @GetMapping("/status")
     public Map<String, Object> status() {
         Map<String, Object> result = new LinkedHashMap<>();
@@ -61,6 +65,7 @@ public class SmartThingsAuthController {
         return result;
     }
 
+    @Operation(summary = "Avvia il login OAuth (redirect a SmartThings, aprire nel browser)")
     @GetMapping("/login")
     public ResponseEntity<Void> login() {
         OAuthTokenProvider oauth = requireOAuth();
@@ -73,6 +78,7 @@ public class SmartThingsAuthController {
                 .build();
     }
 
+    @Operation(summary = "Callback OAuth chiamato da SmartThings")
     @GetMapping("/callback")
     public ResponseEntity<String> callback(@RequestParam String code,
                                            @RequestParam(required = false) String state) {
@@ -89,6 +95,7 @@ public class SmartThingsAuthController {
     }
 
     /** Alternativa manuale: incolla qui il "code" ricevuto sul redirect URI. Body: {"code":"..."} */
+    @Operation(summary = "Scambio manuale del codice di autorizzazione")
     @PostMapping("/code")
     public Map<String, Object> code(@RequestBody Map<String, String> body) {
         OAuthTokenProvider oauth = requireOAuth();

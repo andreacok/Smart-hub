@@ -194,6 +194,17 @@ Il workflow `.github/workflows/ci.yml` parte a ogni `push` e `pull_request`:
 
 ## API del backend
 
+La documentazione interattiva (Swagger UI) è generata automaticamente da springdoc-openapi:
+
+| | In locale | Con Docker |
+|---|---|---|
+| Swagger UI | http://localhost:8080/swagger-ui.html | http://localhost:8088/swagger-ui.html |
+| Specifica OpenAPI (JSON) | http://localhost:8080/v3/api-docs | http://localhost:8088/v3/api-docs |
+
+Da Swagger UI puoi provare tutte le chiamate, compresi i comandi ai dispositivi (sono già pronti esempi per
+ogni comando). In modalità live i comandi agiscono sui dispositivi reali. Per disattivare la documentazione:
+`SMARTHUB_API_DOCS_ENABLED=false`.
+
 | Metodo | Percorso | Descrizione |
 |--------|----------|-------------|
 | GET | `/api/home` | Tutto per la home: riepilogo, stanze, avvisi, scene, dispositivi accesi |
@@ -301,6 +312,7 @@ Le principali:
 | `SMARTTHINGS_STRUCTURE_REFRESH_INTERVAL` | `5m` | polling struttura |
 | `SMARTTHINGS_REQUEST_TIMEOUT` | `10s` | timeout per richiesta |
 | `SMARTHUB_OWNER_NAME` | | nome nel saluto |
+| `SMARTHUB_API_DOCS_ENABLED` | `true` | Swagger UI e `/v3/api-docs` |
 | `SMARTHUB_CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | solo sviluppo senza proxy |
 
 Le API del backend non hanno autenticazione: sono pensate per la rete di casa.
