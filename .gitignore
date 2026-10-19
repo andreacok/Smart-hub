@@ -21,3 +21,6 @@ Thumbs.db
 
 # Output dei test visivi (screenshot di lavoro, non di prodotto)
 .playwright-mcp/
+
+# Dipendenze npm alla radice (il progetto frontend ha la sua in frontend/node_modules)
+node_modules/
