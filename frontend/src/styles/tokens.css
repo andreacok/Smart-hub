@@ -1,42 +1,44 @@
 /*
- * Design tokens Smart Hub.
- * Idea guida: la casa di notte. Tutto resta scuro e quieto; ciò che è acceso "si accende"
- * anche sullo schermo con il colore caldo della lampada.
+ * Design tokens Smart Hub — da SMARTHUB_UI_MOCKUP.md.
+ * Palette neutra scura. L'accent blu indica solo ciò che è attivo, selezionato o interattivo.
+ * I nomi "lamp" e "plug" sono rimasti per non toccare tutti i file: ora indicano lo stato acceso.
  */
 :root {
   color-scheme: dark;
 
   /* Colori */
-  --night: #121a1e;          /* sfondo */
-  --surface: #1b2429;        /* card */
-  --surface-raised: #24313a; /* controlli, card in hover/pressione */
-  --surface-sunken: #0e1417; /* tracce slider, pozzetti */
-  --line: #2e3d46;
-  --text: #eef2f1;
-  --text-muted: #93a3a8;
-  --text-faint: #66777d;
+  --night: #111315;          /* sfondo */
+  --surface: #1a1d20;        /* card */
+  --surface-raised: #22262a; /* card elevate, controlli */
+  --surface-hover: #2b3035;  /* hover e pressione */
+  --surface-sunken: #0b0d0f; /* tracce slider, pozzetti */
+  --line: rgb(255 255 255 / 0.08);
+  --text: #f4f5f6;
+  --text-muted: #a7afb7;
+  --text-faint: #727a82;
 
-  --lamp: #f5c46a;           /* luce accesa */
-  --lamp-strong: #ffd98a;
-  --on-lamp: #2a1e05;        /* testo su superficie accesa */
-  --plug: #8fd6bd;           /* presa/interruttore acceso */
-  --on-plug: #0d2a20;
+  --accent: #6ca8ff;         /* selezione, controlli interattivi, stato attivo */
+  --lamp: var(--accent);
+  --lamp-tint: rgb(108 168 255 / 0.14); /* sfondo tenue di una card attiva */
+  --on-lamp: var(--text);
+  --plug: #6fd08c;           /* presa/interruttore acceso */
+  --on-plug: #0c2016;
   --heat: #f29a6b;
-  --cool: #7fc8d6;
-  --ok: #7dd3a8;
-  --alert: #f07c6b;
-  --warn: #f2b45c;
-  --focus: #9cc9ff;
+  --cool: var(--accent);
+  --ok: #6fd08c;
+  --alert: #ef6a6a;
+  --warn: #f4c45e;
+  --focus: #6ca8ff;
 
   /* Tipografia */
   --font: 'Onest Variable', 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --text-xs: 0.8125rem;
-  --text-s: 0.9375rem;
-  --text-m: 1.0625rem;
-  --text-l: 1.375rem;
-  --text-xl: 1.875rem;
-  --text-2xl: 2.75rem;
-  --text-3xl: 4rem;
+  --text-xs: 0.8125rem;      /* 13px: caption */
+  --text-s: 0.9375rem;       /* 15px: secondario */
+  --text-m: 1.0625rem;       /* 17px: corpo, titolo card */
+  --text-l: 1.375rem;        /* 22px: titolo sezione */
+  --text-xl: 1.625rem;       /* 26px */
+  --text-2xl: 2.5rem;        /* 40px: titolo stanza */
+  --text-3xl: 3.5rem;        /* 56px: temperatura dominante */
 
   /* Spazi */
   --space-1: 4px;
@@ -48,14 +50,14 @@
   --space-7: 48px;
 
   /* Forme: card grandi più morbide, controlli più compatti */
-  --radius-s: 10px;
+  --radius-s: 12px;
   --radius-m: 16px;
   --radius-l: 24px;
   --radius-pill: 999px;
 
-  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 10px 24px -14px rgb(0 0 0 / 0.7);
+  --shadow-card: none;
   --shadow-float: 0 18px 40px -16px rgb(0 0 0 / 0.75);
-  --shadow-lamp: 0 0 0 1px rgb(255 217 138 / 0.35), 0 16px 40px -18px rgb(245 196 106 / 0.55);
+  --shadow-lamp: 0 0 0 1px rgb(108 168 255 / 0.35);
 
   --touch: 56px;
   --rail-width: 220px;
@@ -66,6 +68,6 @@
   :root {
     --bottom-nav-height: 68px;
     --text-2xl: 2.25rem;
-    --text-3xl: 3rem;
+    --text-3xl: 3.25rem;
   }
 }

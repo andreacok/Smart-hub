@@ -1,29 +1,33 @@
 import type { ReactNode } from 'react';
 import { useNow } from '../../hooks/useNow';
+import { formatTemperature } from '../../lib/format';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
+  /** Riga piccola sopra il titolo (es. il saluto). */
+  eyebrow?: ReactNode;
   title: ReactNode;
-  subtitle?: ReactNode;
   /** Contenuto a sinistra del titolo (es. pulsante indietro). */
   leading?: ReactNode;
+  /** Temperatura mostrata accanto all'ora. */
+  temperature?: number;
   /** Mostra un indicatore quando il backend non risponde. */
   offline?: boolean;
   demo?: boolean;
 }
 
-export function TopBar({ title, subtitle, leading, offline = false, demo = false }: TopBarProps) {
+/** Barra superiore essenziale: a sinistra dove sei, a destra ora e temperatura. */
+export function TopBar({ eyebrow, title, leading, temperature, offline = false, demo = false }: TopBarProps) {
   const now = useNow();
   const time = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-  const date = now.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
 
   return (
     <header className={styles.bar}>
       <div className={styles.heading}>
         {leading}
-        <div>
+        <div className={styles.titleBlock}>
+          {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
           <h1 className={styles.title}>{title}</h1>
-          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         </div>
       </div>
       <div className={styles.meta}>
@@ -33,10 +37,8 @@ export function TopBar({ title, subtitle, leading, offline = false, demo = false
             Casa demo
           </span>
         )}
-        <div className={styles.clock}>
-          <span className={styles.time}>{time}</span>
-          <span className={styles.date}>{date}</span>
-        </div>
+        <time className={styles.time} dateTime={now.toISOString()}>{time}</time>
+        {temperature !== undefined && <span className={styles.temperature}>{formatTemperature(temperature)}</span>}
       </div>
     </header>
   );

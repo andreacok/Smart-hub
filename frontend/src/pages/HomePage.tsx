@@ -1,26 +1,16 @@
 import { LightbulbOff } from 'lucide-react';
 import { ApiError } from '../api/client';
-import type { Home } from '../api/types';
 import { QuickAction } from '../components/common/QuickAction';
 import { EmptyState, ErrorState, LoadingState } from '../components/common/PageState';
-import { ActiveDevices } from '../components/home/ActiveDevices';
 import { AlertList } from '../components/home/AlertList';
+import { HomeSummary } from '../components/home/HomeSummary';
 import { RoomCard } from '../components/home/RoomCard';
 import { SceneCard } from '../components/home/SceneCard';
 import { TopBar } from '../components/layout/TopBar';
 import { useHomeLightsOff, useExecuteScene } from '../hooks/useActions';
 import { useHome } from '../hooks/useHome';
-import { formatTemperature, greeting, pluralize } from '../lib/format';
+import { greeting } from '../lib/format';
 import styles from './HomePage.module.css';
-
-function summaryLine(home: Home): string {
-  const s = home.summary;
-  const parts: string[] = [];
-  parts.push(s.lightsOn === 0 ? 'Luci tutte spente' : pluralize(s.lightsOn, 'luce accesa', 'luci accese'));
-  if (s.averageTemperature !== undefined) parts.push(`${formatTemperature(s.averageTemperature)} in casa`);
-  if (s.alertCount > 0) parts.push(pluralize(s.alertCount, 'avviso', 'avvisi'));
-  return parts.join(', ');
-}
 
 export function HomePage() {
   const { data: home, error, isPending, isError, refetch } = useHome();
@@ -45,67 +35,66 @@ export function HomePage() {
   }
 
   const name = home.ownerName?.trim();
-  const title = name ? `${greeting()}, ${name}` : greeting();
+  const eyebrow = name ? `${greeting()}, ${name}` : greeting();
 
   return (
     <>
-      <TopBar title={title} subtitle={summaryLine(home)} offline={isError} demo={home.mode === 'mock'} />
+      <TopBar
+        eyebrow={eyebrow}
+        title={home.location?.name ?? 'Casa'}
+        temperature={home.summary.averageTemperature}
+        offline={isError}
+        demo={home.mode === 'mock'}
+      />
 
-      <div className={styles.layout}>
-        <section className={styles.rooms} aria-labelledby="rooms-title">
-          <h2 id="rooms-title" className={styles.sectionTitle}>Stanze</h2>
-          {home.rooms.length === 0 ? (
-            <EmptyState
-              title="Nessuna stanza"
-              message="Crea le stanze nell'app SmartThings e assegna i dispositivi: compariranno qui automaticamente."
-            />
-          ) : (
-            <div className={styles.roomGrid}>
-              {home.rooms.map((room) => (
-                <RoomCard key={room.id} room={room} />
-              ))}
-            </div>
-          )}
+      <HomeSummary home={home} />
+
+      <section aria-labelledby="rooms-title">
+        <h2 id="rooms-title" className={styles.sectionTitle}>Stanze</h2>
+        {home.rooms.length === 0 ? (
+          <EmptyState
+            title="Nessuna stanza"
+            message="Crea le stanze nell'app SmartThings e assegna i dispositivi: compariranno qui automaticamente."
+          />
+        ) : (
+          <div className={styles.roomGrid}>
+            {home.rooms.map((room) => (
+              <RoomCard key={room.id} room={room} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {(home.scenes.length > 0 || home.summary.lightsOn > 0) && (
+        <section aria-labelledby="actions-title" className={styles.actions}>
+          <h2 id="actions-title" className={styles.sectionTitle}>Azioni rapide</h2>
+          <div className={styles.actionRow}>
+            {home.summary.lightsOn > 0 && (
+              <QuickAction
+                label="Spegni le luci"
+                icon={<LightbulbOff size={20} />}
+                onClick={() => lightsOff.mutate()}
+                busy={lightsOff.isPending}
+              />
+            )}
+            {home.scenes.map((s) => (
+              <SceneCard
+                key={s.id}
+                scene={s}
+                onRun={(sc) => scene.mutate(sc)}
+                running={scene.isPending && scene.variables?.id === s.id}
+              />
+            ))}
+          </div>
         </section>
+      )}
 
-        <aside className={styles.side}>
-          {home.scenes.length > 0 && (
-            <section aria-labelledby="scenes-title">
-              <h2 id="scenes-title" className={styles.sectionTitle}>Scene</h2>
-              <div className={styles.scenes}>
-                {home.scenes.map((s) => (
-                  <SceneCard
-                    key={s.id}
-                    scene={s}
-                    onRun={(sc) => scene.mutate(sc)}
-                    running={scene.isPending && scene.variables?.id === s.id}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          <section aria-labelledby="active-title">
-            <div className={styles.sectionHead}>
-              <h2 id="active-title" className={styles.sectionTitle}>Acceso ora</h2>
-              {home.summary.lightsOn > 0 && (
-                <QuickAction
-                  label="Spegni le luci"
-                  icon={<LightbulbOff size={18} />}
-                  onClick={() => lightsOff.mutate()}
-                  busy={lightsOff.isPending}
-                />
-              )}
-            </div>
-            <ActiveDevices devices={home.activeDevices} />
-          </section>
-
-          <section aria-labelledby="alerts-title">
-            <h2 id="alerts-title" className={styles.sectionTitle}>Avvisi</h2>
-            <AlertList alerts={home.alerts} />
-          </section>
-        </aside>
-      </div>
+      {home.alerts.length > 0 && (
+        <section aria-labelledby="alerts-title" className={styles.actions}>
+          <h2 id="alerts-title" className={styles.sectionTitle}>Avvisi</h2>
+          <AlertList alerts={home.alerts} />
+        </section>
+      )}
     </>
   );
 }

@@ -24,6 +24,11 @@ export function ShutterCard({ device }: { device: Device }) {
       status={shutterLabel(s.openState, s.position)}
       aside={hasPosition ? <ShutterWindow position={position} /> : undefined}
     >
+      {hasPosition && (
+        <p className={styles.bigValue} aria-hidden="true">
+          {Math.round(position)}%
+        </p>
+      )}
       <div className={styles.segmented} role="group" aria-label={`Comandi ${device.name}`}>
         <button type="button" onClick={() => mutate({ device, command: { command: 'OPEN' } })}>
           <ChevronUp size={20} aria-hidden="true" /> Apri
@@ -56,7 +61,6 @@ function ShutterWindow({ position }: { position: number }) {
   return (
     <span className={styles.window} aria-hidden="true">
       <span className={styles.blind} style={{ height: `${closed}%` }} />
-      <span className={styles.windowLabel}>{Math.round(position)}%</span>
     </span>
   );
 }
