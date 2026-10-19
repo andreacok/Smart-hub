@@ -18,6 +18,166 @@ Primary stack:
 
 ---
 
+# PERMANENT WORKING RULES
+
+These rules apply to every task in this repository. Read them before starting any work. They take priority over default habits. The user should not need to repeat them.
+
+## 1. Git workflow (mandatory)
+
+For every new feature, significant bug fix or requested refactoring:
+
+1. Check `git status` and make sure there are no local changes that would be lost.
+2. Switch to `main`: `git checkout main`.
+3. Update it: `git pull origin main`.
+4. Create a dedicated branch from the updated `main`.
+5. Only after the branch exists, start editing code.
+
+Branch naming:
+
+```text
+feature/<feature-name>
+fix/<fix-name>
+refactor/<refactor-name>
+```
+
+Examples: `feature/smartthings-device-categories`, `feature/room-image-upload`, `fix/device-type-detection`, `refactor/device-mapping`.
+
+Rules:
+
+- Never implement features directly on `main`.
+- A new functional request normally gets a new branch. Do not reuse the branch of a previous task automatically: go back to `main`, pull and branch again, unless the user explicitly says the request belongs to the same feature.
+- Uncommitted local changes are never deleted, overwritten or discarded. No destructive operations (`git reset --hard`, `git checkout -- <files>`, `git clean`, force-push, deleting unmerged branches). Preserve the existing work (commit it, or stash it with a clear message) and handle the situation safely before continuing.
+- Do not merge into `main` without an explicit request.
+- Do not push without an explicit request.
+
+## 2. One feature = one branch
+
+Keep every branch focused on a single feature, fix or refactoring. Do not mix unrelated changes. If independent work emerges during development, report it instead of including it automatically.
+
+## 3. Stack
+
+See "Primary stack" above. Concretely:
+
+- Frontend: `frontend/` (React, TypeScript, Vite), responsive web app.
+- Backend: `backend/` (Java, Spring Boot, Maven).
+- Integration: Samsung SmartThings API.
+
+Keep compatibility with the existing architecture. Do not introduce new frameworks or heavy dependencies without a concrete reason.
+
+## 4. SmartThings device classification
+
+- Do not infer the device type mainly from capabilities. Capabilities describe what a device can do, not necessarily what kind of device it is.
+- The primary source for classifying a device is the SmartThings category, `components[].categories[].name`.
+- Classification priority:
+  1. SmartThings category of the `main` component;
+  2. other specific categories present in the components;
+  3. metadata / device profile when available;
+  4. inference from a combination of capabilities;
+  5. fallback `GENERIC` / `OTHER`.
+- Never classify a device as a thermostat only because it exposes `temperatureMeasurement`. An oven, fridge, air conditioner, temperature sensor or other appliance can expose temperature without being a thermostat.
+- Keep both the original SmartThings category and a normalized Smart Hub type in the model:
+
+  ```json
+  {
+    "smartThingsCategory": "Refrigerator",
+    "deviceType": "REFRIGERATOR"
+  }
+  ```
+
+- Unknown SmartThings categories must never cause errors: always keep the original value and fall back to `GENERIC` / `OTHER`.
+
+## 5. Capabilities
+
+Use capabilities to determine state, available commands, switch, level, temperature, setpoint, mode, lock, media, appliance state and other specific features.
+
+Capabilities must never override an explicit and more reliable SmartThings category.
+
+## 6. Frontend
+
+Keep:
+
+- strictly typed TypeScript;
+- readable, reusable components;
+- responsive layout for desktop, tablet and mobile;
+- visual consistency with the existing dashboard;
+- no regressions in controls that already work.
+
+When adding a new device type:
+
+- use the normalized type to choose card, icon and behaviour;
+- if no specific UI exists yet, use an appropriate generic card;
+- never show semantically wrong UI, for example an oven or fridge displayed as a thermostat.
+
+## 7. Backend
+
+Keep:
+
+- clear separation between controllers, services, mappers and models;
+- SmartThings logic centralized and not duplicated;
+- robust handling of missing data and unrecognized devices;
+- compatibility with the existing behaviour.
+
+Avoid hardcoding anything tied only to the devices present in the demo home today. The solution must extend to new SmartThings categories.
+
+## 8. Testing (mandatory)
+
+Every change includes relevant tests. When applicable, run before declaring a task complete:
+
+- Backend, from `backend/`: `mvn test`, and `mvn -B clean verify` / package when packaging is affected.
+- Frontend, from `frontend/`: `npm test`, `npx tsc -b` (typecheck), `npm run build`.
+
+Do not declare a task complete if relevant tests fail. If a failure is pre-existing or unrelated, explain clearly why.
+
+## 9. Functional and visual verification
+
+When a change touches UI or user-facing behaviour, also verify:
+
+- desktop, tablet (landscape and portrait) and mobile when relevant;
+- the browser console;
+- runtime errors;
+- obvious regressions.
+
+The detailed visual procedure is in "Mandatory visual review with Playwright" and "Workflow for every major UI task" below.
+
+Before attributing a console error to the current change, check whether it is actually new: compare it with the base branch.
+
+## 10. Definition of Done
+
+Before declaring a feature complete, verify:
+
+- correct branch;
+- implementation complete;
+- no unrelated changes;
+- backend tests run;
+- frontend tests run;
+- build succeeds;
+- functional / visual verification done when relevant;
+- no evident regressions.
+
+The final report always states:
+
+- branch name;
+- files and main areas modified;
+- what was implemented;
+- tests run and their results;
+- build results;
+- visual checks performed;
+- remaining issues or limitations.
+
+## 11. Forbidden
+
+- Developing directly on `main`.
+- Deleting local changes without consent, or running destructive resets.
+- Merging into `main` or pushing without a request.
+- Classifying SmartThings devices from a single capability when an explicit category exists.
+- Introducing regressions in devices that already work.
+
+## 12. Permanent application
+
+These are permanent repository rules. Read and follow this file before starting any new task.
+
+---
+
 # DESIGN REFERENCES (VISUAL SOURCE OF TRUTH)
 
 The directory `docs/design-reference/` contains the official visual references of SmartHub.
@@ -515,7 +675,13 @@ Motion should feel restrained and premium.
 
 # COLOR
 
-Use a dark-first theme.
+SmartHub supports a light and a dark theme.
+
+- By default the theme follows the operating system (`prefers-color-scheme`).
+- The user can force light or dark from the theme selector in the top bar. The choice is stored in localStorage under `smarthub.theme`.
+- Dark is the reference theme; the light palette must keep the same visual hierarchy.
+- Colour tokens live in `frontend/src/styles/tokens.css`. Do not hardcode colours in components.
+- Text placed over room photos uses the `--on-photo` tokens and must stay light in both themes, because the photo overlay is always dark.
 
 Colors should be intentional.
 
@@ -590,7 +756,7 @@ Avoid extremely large JSX files.
 
 The frontend must not depend directly on raw SmartThings JSON.
 
-Consume normalized backend DTOs.
+Consume normalized backend DTOs. The DTO carries both the original SmartThings category (`smartThingsCategory`) and the normalized `deviceType`; see "SmartThings device classification" in the permanent rules.
 
 Example:
 
