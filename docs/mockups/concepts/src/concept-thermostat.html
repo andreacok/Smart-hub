@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartHub · Thermostat</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .stage { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .dial {
+    position: relative; width: 520px; height: 520px; border-radius: 50%; margin: 0 auto;
+    /* Arco di progresso: 21,5° su scala 5–30° ≈ 60% del tracciato da 300°. */
+    background: conic-gradient(from 120deg, var(--sky) 0deg 180deg, #2a3038 180deg 300deg, transparent 300deg);
+    display: grid; place-items: center;
+  }
+  .dial-inner { width: 420px; height: 420px; border-radius: 50%; background: var(--night); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .target { font-size: 150px; font-weight: 500; letter-spacing: -0.05em; line-height: 0.9; font-variant-numeric: tabular-nums; }
+  .modes { display: flex; flex-direction: column; gap: 14px; }
+  .mode { height: 88px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; gap: 18px; padding: 0 26px; font-size: 20px; font-weight: 500; }
+  .mode.on { background: var(--heat); color: #22120a; border-color: transparent; }
+  .step { width: 96px; height: 96px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; font-size: 42px; border: 1px solid var(--line); }
+  .stepper { display: flex; align-items: center; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="row">
+    <div class="pill" style="background: var(--surface);">← Soggiorno</div>
+    <div class="spacer"></div>
+    <div class="label">Termostato · in pausa</div>
+  </div>
+
+  <div class="stage">
+    <div>
+      <div class="dial">
+        <div class="dial-inner">
+          <div class="label" style="color: var(--sky);">Temperatura desiderata</div>
+          <div class="target" style="margin-top: 14px;">21,5°</div>
+          <div class="muted" style="font-size: 20px; margin-top: 18px;">Ora 21,4° · nessun riscaldamento attivo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modes" style="max-width: 560px; justify-self: center; width: 100%;">
+      <div class="stepper" style="margin-bottom: 14px;">
+        <div class="step">−</div>
+        <div class="muted" style="font-size: 18px;">a passi di 0,5°</div>
+        <div class="step">+</div>
+      </div>
+      <div class="mode on"><span>♨</span> Caldo</div>
+      <div class="mode"><span>❄</span> Freddo</div>
+      <div class="mode"><span>◎</span> Eco</div>
+      <div class="mode"><span>⏻</span> Spento</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

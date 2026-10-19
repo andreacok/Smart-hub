@@ -18,6 +18,65 @@ Primary stack:
 
 ---
 
+# DESIGN REFERENCES (VISUAL SOURCE OF TRUTH)
+
+The directory `docs/design-reference/` contains the official visual references of SmartHub.
+
+- These images are the **visual source of truth** for the frontend.
+- Before any significant redesign, analyze the relevant references first.
+- References take priority over default shadcn styling, 21st.dev components or any other component library.
+- shadcn and 21st.dev are implementation accelerators, not a source of visual identity.
+- Use Playwright to compare the real UI against the references.
+- After significant UI changes, save final screenshots to `docs/mockups/final/`.
+- Judge visual quality against the references, not only against technical correctness, build success or compilation.
+
+Main references:
+
+- `docs/design-reference/01-home-desktop.png` — home, desktop
+- `docs/design-reference/02-room-soggiorno-desktop.png` — room (Soggiorno), desktop
+- `docs/design-reference/03-home-mobile.png` — home, mobile
+- `docs/design-reference/04-room-soggiorno-mobile.png` — room (Soggiorno), mobile
+- `docs/design-reference/05-room-camera-mobile.png` — room (Camera), mobile
+- `docs/design-reference/06-room-cucina-mobile.png` — room (Cucina), mobile
+- `docs/design-reference/07-shutter-control-mobile.png` — shutter control, mobile
+- `docs/design-reference/08-room-images-collage.png` — secondary photo reference for room style and mood only
+- `docs/design-reference/09-room-assets-collage.png` — official source for the real room photos (see Room imagery rules)
+- `docs/design-reference/smarthub-reference-collage.png` — overview collage of the visual direction
+
+Priority: `01`–`07` are the source of truth for UI, layout, components and responsive behaviour. `09` is the primary source for room photos. `08` is secondary. The overview collage sets the general direction.
+
+---
+
+# OFFICIAL ROOMS AND ROOM IMAGERY
+
+## Official rooms
+
+The main real rooms are:
+
+- Bagno Grande
+- Bagno Piccolo
+- Cucina
+- Corridoio
+- Salotto
+- Cameretta
+- Camera da Letto
+
+Any other room must be supported through the fallback (`default-room`).
+
+## Room imagery rules
+
+- Room images are resolved centrally in `frontend/src/config/roomImages.ts`.
+- They must not be hardcoded inside RoomCard or RoomPage.
+- They must work in both the Home and the Room View, from the same resolver.
+- Unknown names, empty strings, `undefined` and `null` use `default-room`.
+- A room that SmartThings returns with a new name must never cause a broken image or an error.
+- Assets live in `frontend/src/assets/rooms/` as WebP, cropped from `docs/design-reference/09-room-assets-collage.png`, with no text or UI baked in.
+- Responsive crops are set per room with `desktop`, `tablet` and `mobile` object positions, if needed.
+
+## Mock data
+
+The demo home uses the official rooms plus `Ripostiglio`, an unofficial test room that must always show the default photo.
+
 # UI DESIGN PRINCIPLES
 
 SmartHub must feel:

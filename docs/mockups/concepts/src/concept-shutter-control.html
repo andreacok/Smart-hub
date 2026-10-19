@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartHub · Shutter Control</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .stage { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .window-wrap { display: flex; align-items: center; justify-content: center; }
+  .window {
+    position: relative; width: 420px; height: 600px; border-radius: 28px; overflow: hidden;
+    border: 10px solid #23272b; background: linear-gradient(180deg, #2a3a50 0%, #1a2332 60%, #15202c 100%);
+  }
+  .sun { position: absolute; right: 70px; top: 230px; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle, #ffe9b8 0%, rgb(255 233 184 / 0.15) 70%); }
+  .blind {
+    position: absolute; left: 0; right: 0; top: 0; height: 20%;
+    background: repeating-linear-gradient(180deg, #2c3136 0 26px, #23272b 26px 28px);
+    border-bottom: 3px solid #3a4046;
+    transition: height 600ms ease;
+  }
+  .ctl-panel { display: flex; flex-direction: column; gap: 28px; justify-content: center; }
+  .seg3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .seg3 div { height: 84px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 500; }
+  .seg3 div.on { background: var(--sky-soft); border-color: rgb(127 182 255 / 0.3); color: var(--sky); }
+  .stat { display: flex; justify-content: space-between; align-items: baseline; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="row">
+    <div class="pill" style="background: var(--surface);">← Soggiorno</div>
+    <div class="spacer"></div>
+    <div class="label">Tapparella finestra</div>
+  </div>
+
+  <div class="stage">
+    <div class="window-wrap">
+      <div class="window">
+        <div class="sun"></div>
+        <div class="blind" style="height: 20%;"></div>
+      </div>
+    </div>
+
+    <div class="ctl-panel">
+      <div class="stat">
+        <span class="h1" style="font-size: 40px;">Aperta</span>
+        <span class="big" style="font-size: 110px; color: var(--sky);">80<span style="font-size: 48px;">%</span></span>
+      </div>
+      <div class="faint" style="font-size: 16px; margin-top: -10px;">Apertura · si ferma al comando</div>
+      <div class="slider" style="height: 28px;"><span style="width: 80%; background: var(--sky);"></span><i style="left: 80%; width: 46px; height: 46px;"></i></div>
+      <div class="seg3">
+        <div>↑ Apri</div>
+        <div class="on">■ Stop</div>
+        <div>↓ Chiudi</div>
+      </div>
+      <div class="card" style="padding: 22px 26px;">
+        <div class="row"><span class="dot" style="background: var(--ok);"></span><span style="font-size: 17px;">Online · ultimo comando 2 min fa</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

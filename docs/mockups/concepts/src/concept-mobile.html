@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartHub · Mobile</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .frame { padding: 28px 20px 0; gap: 18px; }
+  .room { padding: 16px 18px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { padding: 16px 18px; border-radius: 20px; }
+  .stat .v { font-size: 24px; font-weight: 500; margin-top: 4px; }
+  .rooms { display: flex; flex-direction: column; gap: 10px; }
+  .room { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
+  .room .t { font-size: 36px; font-weight: 500; letter-spacing: -0.03em; margin-left: auto; }
+  .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 88px; background: rgb(14 16 18 / 0.92); border-top: 1px solid var(--line); display: flex; justify-content: space-around; align-items: center; padding-bottom: 14px; }
+  .nav span { font-size: 15px; color: var(--muted); font-weight: 500; }
+  .nav span.on { color: var(--sky); }
+  .actions { display: flex; gap: 10px; overflow: hidden; }
+  .action { flex: none; height: 56px; padding: 0 20px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; font-size: 16px; font-weight: 500; }
+  .action.on { background: var(--amber-soft); color: var(--amber); border-color: rgb(245 183 92 / 0.3); }
+</style>
+</head>
+<body>
+<div class="frame" style="position: relative;">
+  <div class="row" style="justify-content: space-between; align-items: flex-end;">
+    <div>
+      <div class="label" style="font-size: 12px;">Buonasera, Andrea</div>
+      <div class="h1" style="font-size: 34px; margin-top: 6px;">Casa in ordine</div>
+    </div>
+    <div style="font-size: 26px; font-weight: 500; font-variant-numeric: tabular-nums;">23:41</div>
+  </div>
+
+  <div class="stats">
+    <div class="card stat"><div class="label" style="font-size: 11px;">Casa</div><div class="v" style="color: var(--amber);">Attenzione</div></div>
+    <div class="card stat"><div class="label" style="font-size: 11px;">Luci</div><div class="v">5 <span class="faint" style="font-size: 15px;">/ 9</span></div></div>
+    <div class="card stat"><div class="label" style="font-size: 11px;">Temperatura</div><div class="v">22,0°</div></div>
+    <div class="card stat"><div class="label" style="font-size: 11px;">Avvisi</div><div class="v" style="color: var(--alert);">3</div></div>
+  </div>
+
+  <div class="label" style="margin-top: 4px;">Stanze</div>
+  <div class="rooms">
+    <div class="card lit room"><div><div class="label" style="font-size: 11px;">Soggiorno</div><div class="muted" style="font-size: 15px; margin-top: 6px;">2 luci accese · tapparella 58%</div></div><div class="t">22,8°</div></div>
+    <div class="card room"><div><div class="label" style="font-size: 11px;">Camera</div><div class="muted" style="font-size: 15px; margin-top: 6px;">1 luce accesa · <span style="color: var(--alert);">1 avviso</span></div></div><div class="t">20,3°</div></div>
+    <div class="card lit room"><div><div class="label" style="font-size: 11px;">Cucina</div><div class="muted" style="font-size: 15px; margin-top: 6px;">1 luce accesa</div></div><div class="t" style="font-size: 22px; color: var(--muted);">Accesa</div></div>
+  </div>
+
+  <div class="label" style="margin-top: 4px;">Azioni rapide</div>
+  <div class="actions">
+    <div class="action on">Spegni le luci</div>
+    <div class="action">Buongiorno</div>
+    <div class="action">Film</div>
+  </div>
+
+  <nav class="nav">
+    <span class="on">Casa</span><span>Soggiorno</span><span>Camera</span><span>Cucina</span>
+  </nav>
+</div>
+</body>
+</html>
