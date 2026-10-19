@@ -1,0 +1,26 @@
+# Build output
+backend/target/
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Segreti e dati locali (token OAuth SmartThings)
+.env
+*.env.local
+backend/data/
+data/
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+.DS_Store
+Thumbs.db
+
+# Output dei test visivi (screenshot di lavoro, non di prodotto)
+.playwright-mcp/
+
+# Dipendenze npm alla radice (il progetto frontend ha la sua in frontend/node_modules)
+node_modules/

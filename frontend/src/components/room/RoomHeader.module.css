@@ -1,0 +1,210 @@
+/* Hero stanza: foto a tutta larghezza con scrim scuro, testo in basso, clima in un pannello flottante. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 300px;
+  margin-bottom: var(--space-4);
+  padding: var(--space-5);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--surface-sunken);
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos-desktop, center);
+}
+
+/* Scrim: più scuro in basso dove sta il testo, leggibile su ogni foto. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to top, rgb(11 13 15 / 0.9) 0%, rgb(11 13 15 / 0.35) 45%, rgb(11 13 15 / 0.15) 100%),
+    linear-gradient(to right, rgb(11 13 15 / 0.45), transparent 60%);
+  pointer-events: none;
+}
+
+/* Stanza con luci accese: un velo ambra molto tenue sopra la foto, mai pieno. */
+.lit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(70% 90% at 30% 100%, rgb(245 178 92 / 0.14), transparent 70%);
+  pointer-events: none;
+}
+
+.back {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgb(17 19 21 / 0.55);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+}
+
+.back:hover {
+  background: var(--surface-raised);
+}
+
+/* Cambio foto: discreto, in alto a destra, coerente con il pulsante indietro. */
+.edit {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgb(17 19 21 / 0.55);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+}
+
+.edit:hover {
+  background: var(--surface-raised);
+}
+
+.copy {
+  position: relative;
+  z-index: 1;
+  max-width: 60%;
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-shadow: 0 2px 16px rgb(0 0 0 / 0.5);
+}
+
+.facts {
+  margin-top: var(--space-2);
+  color: var(--text);
+  font-size: var(--text-s);
+  opacity: 0.85;
+}
+
+.climate {
+  position: absolute;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: rgb(17 19 21 / 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.climateValue {
+  font-size: var(--text-3xl);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.climateLabel {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 1023px) {
+  .hero {
+    height: 260px;
+  }
+
+  .image {
+    object-position: var(--pos-tablet, center);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    height: 240px;
+    margin-bottom: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-m);
+  }
+
+  .image {
+    object-position: var(--pos-mobile, center);
+  }
+
+  .back,
+  .edit {
+    top: var(--space-3);
+    width: 48px;
+    height: 48px;
+  }
+
+  .back {
+    left: var(--space-3);
+  }
+
+  .edit {
+    right: var(--space-3);
+  }
+
+  .title {
+    font-size: var(--text-xl);
+  }
+
+  /* Su smartphone il pannello clima sta in basso a destra: in alto c'è il pulsante di modifica. */
+  .climate {
+    right: var(--space-3);
+    bottom: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .copy {
+    max-width: 56%;
+  }
+
+  .facts {
+    font-size: var(--text-xs);
+  }
+
+  .climateValue {
+    font-size: var(--text-xl);
+  }
+
+  .actions {
+    margin-bottom: var(--space-5);
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Smart Hub",
+  "short_name": "Smart Hub",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#121a1e",
+  "theme_color": "#121a1e",
+  "start_url": "/",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

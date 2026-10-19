@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Backend (Spring Boot)",
+      "request": "launch",
+      "mainClass": "com.smarthub.SmartHubApplication",
+      "projectName": "smart-hub-backend",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Frontend (Vite)",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Smart Hub (backend + frontend)",
+      "configurations": ["Backend (Spring Boot)", "Frontend (Vite)"],
+      "stopAll": true
+    }
+  ]
+}

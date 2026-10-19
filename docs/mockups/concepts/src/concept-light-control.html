@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartHub · Light Control</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .stage { flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: stretch; }
+  .glow {
+    position: relative; border-radius: var(--radius-xl); overflow: hidden;
+    background: radial-gradient(circle at 50% 42%, rgb(245 183 92 / 0.34), rgb(245 183 92 / 0.06) 42%, transparent 70%), #121417;
+    border: 1px solid rgb(245 183 92 / 0.18);
+    display: flex; flex-direction: column; justify-content: space-between; padding: 36px;
+  }
+  .bulb { position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%); width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, #fff3dc 0%, #f5b75c 45%, rgb(245 183 92 / 0.2) 70%, transparent 72%); }
+  .controls { display: flex; flex-direction: column; gap: 28px; }
+  .ctl .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .ctl .head .v { font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .swatches { display: flex; gap: 14px; }
+  .sw { width: 60px; height: 60px; border-radius: 50%; }
+  .sw.sel { box-shadow: 0 0 0 3px var(--night), 0 0 0 5px var(--text); }
+  .kelvin { background: linear-gradient(90deg, #ffb46b, #fff1dc, #cfe3ff); }
+  .toggle { height: 72px; border-radius: 24px; background: var(--amber); color: #1a1205; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="row">
+    <div class="pill" style="background: var(--surface);">← Soggiorno</div>
+    <div class="spacer"></div>
+    <div class="label">Lampadario · accesa</div>
+  </div>
+
+  <div class="stage">
+    <div class="glow">
+      <div class="label" style="color: var(--amber);">Accesa</div>
+      <div class="bulb"></div>
+      <div style="position: relative; z-index: 1;">
+        <div class="big" style="font-size: 150px;">75<span style="font-size: 60px; color: var(--muted);">%</span></div>
+        <div class="muted" style="font-size: 20px; margin-top: 10px;">Luminosità · luce calda 2.700 K</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="card ctl">
+        <div class="head"><span class="h2">Luminosità</span><span class="v">75%</span></div>
+        <div class="slider" style="height: 28px;"><span style="width: 75%;"></span><i style="left: 75%; width: 46px; height: 46px;"></i></div>
+      </div>
+      <div class="card ctl">
+        <div class="head"><span class="h2">Temperatura colore</span><span class="v">2.700 K</span></div>
+        <div class="slider kelvin" style="height: 28px;"><i style="left: 18%; width: 46px; height: 46px;"></i></div>
+        <div class="row" style="justify-content: space-between; margin-top: 10px;"><span class="faint" style="font-size: 14px;">Calda</span><span class="faint" style="font-size: 14px;">Fredda</span></div>
+      </div>
+      <div class="card ctl">
+        <div class="head"><span class="h2">Colore</span><span class="faint" style="font-size: 15px;">Ambra</span></div>
+        <div class="swatches">
+          <div class="sw sel" style="background: hsl(36 90% 58%);"></div>
+          <div class="sw" style="background: hsl(4 85% 58%);"></div>
+          <div class="sw" style="background: hsl(280 70% 58%);"></div>
+          <div class="sw" style="background: hsl(220 85% 58%);"></div>
+          <div class="sw" style="background: hsl(140 70% 58%);"></div>
+        </div>
+      </div>
+      <div class="toggle">Spegni</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

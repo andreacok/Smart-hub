@@ -1,0 +1,92 @@
+# Configurazione Smart Hub backend.
+# Ogni valore è sovrascrivibile con una environment variable (vedi .env.example nella root del repository).
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  # dietro Nginx (Docker) usa gli header X-Forwarded-* per costruire link e redirect corretti
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: smart-hub-backend
+  # Configurazione locale privata: legge il file .env (non committato) nella root del repository,
+  # sia avviando da backend/ (mvn spring-boot:run) sia dalla root (VS Code).
+  # Le environment variables del sistema hanno comunque la precedenza.
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:./.env[.properties]
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      # Foto stanze: il limite applicativo è 10 MB, qui c'è un margine per i campi della richiesta.
+      max-file-size: 10MB
+      max-request-size: 11MB
+  task:
+    scheduling:
+      pool:
+        size: 3
+      thread-name-prefix: smarthub-sched-
+
+smarthub:
+  # Cartella dei dati runtime (foto personalizzate delle stanze). Docker: /data.
+  data-dir: ${SMARTHUB_DATA_DIR:./data}
+  owner-name: ${SMARTHUB_OWNER_NAME:}
+  cors-allowed-origins: ${SMARTHUB_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+
+smartthings:
+  # mock = casa demo simulata (nessun account necessario), live = account SmartThings reale
+  mode: ${SMARTTHINGS_MODE:mock}
+  base-url: ${SMARTTHINGS_BASE_URL:https://api.smartthings.com/v1}
+  # pat = Personal Access Token (SMARTTHINGS_TOKEN), oauth = OAuth-In SmartApp con refresh automatico
+  auth: ${SMARTTHINGS_AUTH:pat}
+  token: ${SMARTTHINGS_TOKEN:}
+  location-id: ${SMARTTHINGS_LOCATION_ID:}
+  request-timeout: ${SMARTTHINGS_REQUEST_TIMEOUT:10s}
+  max-retries: ${SMARTTHINGS_MAX_RETRIES:2}
+  retry-backoff: 300ms
+  status-refresh-interval: ${SMARTTHINGS_STATUS_REFRESH_INTERVAL:5s}
+  structure-refresh-interval: ${SMARTTHINGS_STRUCTURE_REFRESH_INTERVAL:5m}
+  health-refresh-interval: 1m
+  command-refresh-delay: ${SMARTTHINGS_COMMAND_REFRESH_DELAY:1500ms}
+  status-concurrency: 4
+  oauth:
+    client-id: ${SMARTTHINGS_OAUTH_CLIENT_ID:}
+    client-secret: ${SMARTTHINGS_OAUTH_CLIENT_SECRET:}
+    redirect-uri: ${SMARTTHINGS_OAUTH_REDIRECT_URI:}
+    refresh-token: ${SMARTTHINGS_OAUTH_REFRESH_TOKEN:}
+    token-store-path: ${SMARTTHINGS_OAUTH_TOKEN_STORE:./data/smartthings-oauth.json}
+  mock:
+    latency: 120ms
+    command-failure-rate: ${SMARTTHINGS_MOCK_FAILURE_RATE:0.0}
+  # Esempio di override del tipo di un dispositivo (relè "Switch" che comanda una luce):
+  # device-type-overrides:
+  #   "1a2b3c4d-....": LIGHT
+
+# Documentazione API: Swagger UI su /swagger-ui.html, specifica OpenAPI su /v3/api-docs
+springdoc:
+  api-docs:
+    enabled: ${SMARTHUB_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${SMARTHUB_API_DOCS_ENABLED:true}
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+  paths-to-match: /api/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    com.smarthub: INFO

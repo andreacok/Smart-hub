@@ -1,0 +1,79 @@
+/*
+ * Design tokens Smart Hub — da SMARTHUB_UI_MOCKUP.md.
+ * Palette neutra scura. L'accent blu indica solo ciò che è attivo, selezionato o interattivo.
+ * I nomi "lamp" e "plug" sono rimasti per non toccare tutti i file: ora indicano lo stato acceso.
+ */
+:root {
+  color-scheme: dark;
+
+  /* Colori */
+  --night: #111315;          /* sfondo */
+  --surface: #1a1d20;        /* card */
+  --surface-raised: #22262a; /* card elevate, controlli */
+  --surface-hover: #2b3035;  /* hover e pressione */
+  --surface-sunken: #0b0d0f; /* tracce slider, pozzetti */
+  --line: rgb(255 255 255 / 0.08);
+  --text: #f4f5f6;
+  --text-muted: #a7afb7;
+  --text-faint: #727a82;
+
+  --accent: #6ca8ff;         /* selezione, controlli interattivi, tapparelle, azioni neutre */
+
+  /* Luce accesa: ambra caldo, solo per luce/atmosfera/comfort. */
+  --light: #f5b25c;
+  --light-soft: #ffd29a;
+  --light-tint: rgb(245 178 92 / 0.07);     /* sfondo tenue di una card con luce accesa */
+  --light-glow: rgb(245 178 92 / 0.22);
+  --lamp: var(--light);
+  --lamp-tint: var(--light-tint);
+  --on-lamp: #1a1204;
+  --plug: #6fd08c;           /* presa/interruttore acceso */
+  --on-plug: #0c2016;
+  --heat: #f29a6b;
+  --cool: var(--accent);
+  --ok: #6fd08c;
+  --alert: #ef6a6a;
+  --warn: #f4c45e;
+  --focus: #6ca8ff;
+
+  /* Tipografia */
+  --font: 'Onest Variable', 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-xs: 0.8125rem;      /* 13px: caption */
+  --text-s: 0.9375rem;       /* 15px: secondario */
+  --text-m: 1.0625rem;       /* 17px: corpo, titolo card */
+  --text-l: 1.375rem;        /* 22px: titolo sezione */
+  --text-xl: 1.625rem;       /* 26px */
+  --text-2xl: 2.5rem;        /* 40px: titolo stanza */
+  --text-3xl: 3.5rem;        /* 56px: temperatura dominante */
+
+  /* Spazi */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Forme: card grandi più morbide, controlli più compatti */
+  --radius-s: 12px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-pill: 999px;
+
+  --shadow-card: none;
+  --shadow-float: 0 18px 40px -16px rgb(0 0 0 / 0.75);
+  --shadow-lamp: 0 0 0 1px rgb(245 178 92 / 0.28), 0 12px 32px -18px var(--light-glow);
+
+  --touch: 56px;
+  --rail-width: 220px;
+  --bottom-nav-height: 0px;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --bottom-nav-height: 76px;
+    --text-2xl: 2.25rem;
+    --text-3xl: 3.25rem;
+  }
+}

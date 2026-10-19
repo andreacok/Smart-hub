@@ -1,0 +1,44 @@
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--touch);
+  padding: 0 var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--text-m);
+  font-weight: 500;
+  transition: background-color 120ms ease, transform 80ms ease;
+}
+
+.action:hover:not(:disabled) {
+  background: var(--surface-raised);
+}
+
+.action:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.action:disabled {
+  opacity: 0.55;
+}
+
+.icon {
+  display: inline-flex;
+  color: var(--text-muted);
+}
+
+/* Rosso riservato alle azioni globali critiche. */
+.danger {
+  border-color: rgb(239 106 106 / 0.35);
+  background: color-mix(in srgb, var(--alert) 14%, var(--surface));
+}
+
+.danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--alert) 22%, var(--surface));
+}
+
+.danger .icon {
+  color: var(--alert);
+}

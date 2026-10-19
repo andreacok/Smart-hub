@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartHub · Room View</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .main { flex: 1; display: flex; flex-direction: column; gap: 28px; min-width: 0; padding: 40px 48px; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; }
+  .groups { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; }
+  .group .label { margin-bottom: 12px; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .dev { padding: 22px 24px; }
+  .dev .top { display: flex; align-items: center; gap: 16px; }
+  .ico { width: 52px; height: 52px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; color: var(--muted); font-size: 22px; flex: none; }
+  .ico.lit { background: var(--amber-soft); color: var(--amber); }
+  .ico.sky { background: var(--sky-soft); color: var(--sky); }
+  .dev .n { font-size: 19px; font-weight: 600; }
+  .dev .s { font-size: 15px; color: var(--muted); }
+  .dev .aside { margin-left: auto; font-size: 26px; font-weight: 500; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 18px; background: #0a0b0c; margin-top: 16px; }
+  .seg div { height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 16px; font-weight: 500; color: var(--muted); }
+  .seg div.on { background: var(--surface-2); color: var(--text); }
+  .readings { display: flex; gap: 28px; margin-top: 14px; }
+  .readings div { display: flex; flex-direction: column; }
+  .readings span { font-size: 13px; color: var(--muted); }
+  .readings b { font-size: 22px; font-weight: 500; }
+  .temp-hero { font-size: 118px; font-weight: 500; letter-spacing: -0.05em; line-height: 0.9; }
+  .btn { height: 60px; padding: 0 26px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); display: inline-flex; align-items: center; font-size: 17px; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="frame" style="flex-direction: row; gap: 0; padding: 0;">
+  <aside class="sidebar">
+    <div class="nav-item">Casa</div>
+    <div class="nav-item active">Soggiorno <span class="count amber">2 ●</span></div>
+    <div class="nav-item">Camera <span class="count amber">1 ●</span></div>
+    <div class="nav-item">Cucina <span class="count amber">1 ●</span></div>
+    <div class="nav-item">Bagno</div>
+    <div class="nav-item">Studio <span class="count amber">1 ●</span></div>
+    <div class="nav-item">Balcone <span class="count red">2 ▲</span></div>
+    <div class="nav-item">Ingresso</div>
+  </aside>
+
+  <main class="main">
+    <div class="head">
+      <div>
+        <div class="label">Piano terra · 2 luci accese</div>
+        <div class="h1" style="font-size: 60px; margin-top: 10px;">Soggiorno</div>
+      </div>
+      <div style="text-align: right;">
+        <div class="temp-hero">22,8°</div>
+        <div class="muted" style="font-size: 18px; margin-top: 8px;">Umidità 48% · clima in pausa</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="btn">⏻&nbsp;&nbsp;Spegni tutto</div>
+      <div class="btn" style="color: var(--muted);">Scene: Film</div>
+    </div>
+
+    <div class="groups">
+      <div class="group">
+        <div class="label">Luci</div>
+        <div class="stack">
+          <div class="card lit dev">
+            <div class="top"><div class="ico lit">◉</div><div><div class="n">Lampadario</div><div class="s">Accesa · calda</div></div><div class="aside">75%</div></div>
+            <div style="margin-top: 22px;" class="slider"><span style="width: 75%;"></span><i style="left: 75%;"></i></div>
+          </div>
+          <div class="card dev">
+            <div class="top"><div class="ico">◉</div><div><div class="n">Piantana</div><div class="s">Spenta</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="label">Tapparelle</div>
+        <div class="stack">
+          <div class="card dev">
+            <div class="top"><div class="ico sky">≡</div><div><div class="n">Finestra</div><div class="s">Aperta all'80%</div></div><div class="aside">80%</div></div>
+            <div class="seg"><div>Apri</div><div>Stop</div><div>Chiudi</div></div>
+          </div>
+          <div class="card dev">
+            <div class="top"><div class="ico sky">≡</div><div><div class="n">Balcone</div><div class="s">Aperta al 35%</div></div><div class="aside">35%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="label">Clima</div>
+        <div class="card dev">
+          <div class="top"><div class="ico sky">◐</div><div><div class="n">Termostato</div><div class="s">In pausa · 21,5° desiderati</div></div></div>
+          <div class="readings"><div><span>Ora</span><b>21,4°</b></div><div><span>Modalità</span><b>Caldo</b></div></div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="label">Sensori</div>
+        <div class="card dev">
+          <div class="top"><div class="ico">◎</div><div><div class="n">Sensore clima</div><div class="s">Online</div></div></div>
+          <div class="readings"><div><span>Temperatura</span><b>22,8°</b></div><div><span>Umidità</span><b>48%</b></div><div><span>Batteria</span><b>86%</b></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

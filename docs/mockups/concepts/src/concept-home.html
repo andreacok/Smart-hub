@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartHub · Home Dashboard</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .main { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; padding: 28px 48px 24px; }
+  .hero { display: flex; justify-content: space-between; align-items: flex-end; }
+  .hero-status { font-size: 52px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.02; }
+  .hero-sub { font-size: 20px; color: var(--muted); margin-top: 12px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat { padding: 16px 22px; }
+  .stat .v { font-size: 34px; font-weight: 500; margin-top: 6px; letter-spacing: -0.02em; }
+  .rooms { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .room { min-height: 148px; padding: 22px 24px; display: flex; flex-direction: column; gap: 6px; }
+  .room .name { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .room .temp { font-size: 46px; font-weight: 500; letter-spacing: -0.03em; line-height: 1; margin-top: 4px; }
+  .room .det { margin-top: auto; color: var(--muted); font-size: 16px; display: flex; flex-direction: column; gap: 2px; }
+  .actions { display: flex; gap: 12px; }
+  .action { height: 56px; padding: 0 26px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; font-size: 17px; font-weight: 500; }
+  .action.on { background: var(--amber-soft); border-color: rgb(245 183 92 / 0.3); color: var(--amber); }
+  .bottom { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  .alert-row { display: flex; align-items: center; gap: 16px; padding: 12px 18px; border-radius: 18px; background: var(--surface); }
+  .alert-row + .alert-row { margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="frame" style="flex-direction: row; gap: 0; padding: 0;">
+  <aside class="sidebar">
+    <div class="row" style="padding: 0 18px 24px;"><span class="dot" style="background: var(--sky); width: 14px; height: 14px;"></span><span class="h2" style="font-size: 18px; color: var(--muted);">Casa Demo</span></div>
+    <div class="nav-item active">Casa</div>
+    <div class="nav-item">Soggiorno <span class="count amber">2 ●</span></div>
+    <div class="nav-item">Camera <span class="count"><span class="count amber">1 ●</span><span class="count red">1 ▲</span></span></div>
+    <div class="nav-item">Cucina <span class="count amber">1 ●</span></div>
+    <div class="nav-item">Bagno</div>
+    <div class="nav-item">Studio <span class="count amber">1 ●</span></div>
+    <div class="nav-item">Balcone <span class="count red">2 ▲</span></div>
+    <div class="nav-item">Ingresso</div>
+  </aside>
+
+  <main class="main">
+    <div class="hero">
+      <div>
+        <div class="label">Buonasera, Andrea · sabato 18 ottobre</div>
+        <div class="hero-status" style="margin-top: 14px;">Casa in ordine,<br><span class="muted">tre cose da guardare</span></div>
+        <div class="hero-sub">21 dispositivi su 22 online · 5 luci accese · clima a 22°</div>
+      </div>
+      <div class="big" style="font-size: 96px; color: var(--text);">23:41</div>
+    </div>
+
+    <div class="stats">
+      <div class="card stat"><div class="label">Casa</div><div class="v" style="color: var(--amber);">Attenzione</div></div>
+      <div class="card stat"><div class="label">Luci</div><div class="v">5 <span class="faint" style="font-size: 20px;">/ 9</span></div></div>
+      <div class="card stat"><div class="label">Temperatura</div><div class="v">22,0°</div></div>
+      <div class="card stat"><div class="label">Avvisi</div><div class="v" style="color: var(--alert);">3</div></div>
+    </div>
+
+    <div class="rooms">
+      <div class="card lit room"><div class="name">Soggiorno</div><div class="temp">22,8°</div><div class="det"><span>2 luci accese</span><span>Tapparella 58%</span></div></div>
+      <div class="card room"><div class="name">Camera</div><div class="temp">20,3°</div><div class="det"><span>1 luce accesa</span><span class="pill alert" style="align-self: flex-start; font-size: 14px; padding: 6px 12px;">1 avviso</span></div></div>
+      <div class="card lit room"><div class="name">Cucina</div><div class="temp" style="font-size: 30px; color: var(--amber);">Luce accesa</div><div class="det"><span>1 luce accesa</span></div></div>
+      <div class="card room"><div class="name">Bagno</div><div class="temp">22,8°</div><div class="det"><span>Luce spenta</span><span>Umidità 64%</span></div></div>
+      <div class="card lit room"><div class="name">Studio</div><div class="temp" style="font-size: 30px; color: var(--amber);">Presa attiva</div><div class="det"><span>1 luce accesa</span></div></div>
+      <div class="card room"><div class="name">Balcone</div><div class="temp" style="font-size: 30px; color: var(--muted);">Luce spenta</div><div class="det"><span class="pill warn" style="align-self: flex-start; font-size: 14px; padding: 6px 12px;">Porta aperta</span></div></div>
+      <div class="card room"><div class="name">Ingresso</div><div class="temp" style="font-size: 30px; color: var(--muted);">Movimento</div><div class="det"><span>2 dispositivi</span></div></div>
+      <div class="card room" style="border-style: dashed; background: transparent;"><div class="name">Scena</div><div class="temp" style="font-size: 30px;">Buonanotte</div><div class="det"><span>Spegne luci e abbassa tapparelle</span></div></div>
+    </div>
+
+    <div class="bottom">
+      <div>
+        <div class="label" style="margin-bottom: 14px;">Azioni rapide</div>
+        <div class="actions">
+          <div class="action on">Spegni le luci</div>
+          <div class="action">Buongiorno</div>
+          <div class="action">Film</div>
+          <div class="action">Buonanotte</div>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom: 14px;">Da controllare</div>
+        <div class="alert-row"><span class="dot" style="background: var(--amber);"></span><span>Sensore temperatura: batteria al 14%</span></div>
+        <div class="alert-row"><span class="dot" style="background: var(--faint);"></span><span>Porta finestra aperta</span></div>
+        <div class="alert-row"><span class="dot" style="background: var(--alert);"></span><span>Videocamera non raggiungibile</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
