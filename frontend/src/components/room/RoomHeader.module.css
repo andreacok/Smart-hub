@@ -1,0 +1,72 @@
+.header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'back title temp'
+    'back actions actions';
+  align-items: center;
+  column-gap: var(--space-4);
+  row-gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.back {
+  grid-area: back;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+}
+
+.back:hover {
+  color: var(--text);
+  background: var(--surface-raised);
+}
+
+.titleBlock {
+  grid-area: title;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-2xl);
+  letter-spacing: -0.02em;
+}
+
+.facts {
+  margin-top: var(--space-1);
+  color: var(--text-muted);
+}
+
+.temperature {
+  grid-area: temp;
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.actions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (max-width: 760px) {
+  .header {
+    grid-template-areas:
+      'back title temp'
+      'actions actions actions';
+    margin-bottom: var(--space-5);
+  }
+
+  .back {
+    width: 48px;
+    height: 48px;
+  }
+}

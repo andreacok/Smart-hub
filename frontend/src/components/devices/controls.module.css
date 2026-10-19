@@ -1,0 +1,183 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.caption {
+  font-size: var(--text-xs);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+/* Colori preimpostati per le luci RGB */
+.swatches {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgb(42 30 5 / 0.15);
+}
+
+.swatchSelected {
+  border-color: var(--on-lamp);
+}
+
+/* Comandi tapparella */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-m);
+  background: var(--surface-sunken);
+}
+
+.segmented button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 48px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--text);
+  font-weight: 500;
+  font-size: var(--text-s);
+}
+
+.segmented button:hover {
+  background: var(--surface-raised);
+}
+
+.segmented button:active {
+  background: var(--line);
+}
+
+.segmented button[data-emphasis='true'] {
+  background: var(--surface-raised);
+}
+
+.window {
+  position: relative;
+  display: block;
+  width: 46px;
+  height: 56px;
+  border-radius: 8px;
+  border: 2px solid var(--line);
+  background: color-mix(in srgb, var(--cool) 30%, var(--surface));
+  overflow: hidden;
+}
+
+.blind {
+  position: absolute;
+  inset: 0 0 auto 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--surface-raised) 0 5px,
+    var(--line) 5px 6px
+  );
+  transition: height 600ms ease;
+}
+
+.windowLabel {
+  position: absolute;
+  inset: auto 0 2px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+}
+
+/* Termostato */
+.thermostat {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.round {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+  display: grid;
+  place-items: center;
+}
+
+.round:disabled {
+  opacity: 0.4;
+}
+
+.round:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.targetValue {
+  font-size: var(--text-3xl);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: var(--text-s);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--night);
+}
+
+/* Letture sensori */
+.readings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin: 0;
+}
+
+.readings div {
+  display: flex;
+  flex-direction: column;
+}
+
+.readings dt {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.readings dd {
+  margin: 0;
+  font-size: var(--text-l);
+  font-weight: 500;
+}

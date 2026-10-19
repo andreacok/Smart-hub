@@ -1,0 +1,14 @@
+.stale {
+  margin-bottom: var(--space-5);
+  color: var(--alert);
+  font-size: var(--text-s);
+}
+
+.link {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+}

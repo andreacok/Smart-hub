@@ -1,0 +1,114 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: background-color 220ms ease, box-shadow 220ms ease, color 220ms ease;
+  min-width: 0;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--touch);
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  border-radius: var(--radius-m);
+}
+
+button.header:active:not(:disabled) .icon {
+  transform: scale(0.94);
+}
+
+.icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  transition: background-color 220ms ease, color 220ms ease, transform 80ms ease;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  font-size: var(--text-m);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status {
+  font-size: var(--text-s);
+  color: var(--text-muted);
+}
+
+.aside {
+  flex: none;
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Luce accesa: la card diventa la lampada. */
+.lit {
+  background: var(--lamp);
+  color: var(--on-lamp);
+  box-shadow: var(--shadow-lamp);
+}
+
+.lit .icon {
+  background: rgb(42 30 5 / 0.12);
+  color: var(--on-lamp);
+}
+
+.lit .status {
+  color: rgb(42 30 5 / 0.72);
+}
+
+/* Presa/interruttore acceso. */
+.active .icon {
+  background: var(--plug);
+  color: var(--on-plug);
+}
+
+.offline {
+  opacity: 0.6;
+}
+
+@media (max-width: 760px) {
+  .wide {
+    grid-column: auto;
+  }
+}

@@ -1,0 +1,41 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0 var(--space-4) 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--text-s);
+}
+
+.chip:hover {
+  background: var(--surface-raised);
+}
+
+.light svg {
+  color: var(--lamp);
+}
+
+.name {
+  font-weight: 500;
+}
+
+.room {
+  color: var(--text-muted);
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: var(--text-s);
+}
