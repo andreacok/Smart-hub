@@ -56,8 +56,8 @@
 }
 
 .active {
-  background: var(--surface);
-  color: var(--text);
+  background: var(--surface-raised);
+  color: var(--accent);
 }
 
 .label {
