@@ -15,5 +15,6 @@ data/
 *.iml
 .vscode/*
 !.vscode/extensions.json
+!.vscode/launch.json
 .DS_Store
 Thumbs.db

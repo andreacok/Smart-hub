@@ -10,6 +10,13 @@ server:
 spring:
   application:
     name: smart-hub-backend
+  # Configurazione locale privata: legge il file .env (non committato) nella root del repository,
+  # sia avviando da backend/ (mvn spring-boot:run) sia dalla root (VS Code).
+  # Le environment variables del sistema hanno comunque la precedenza.
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:./.env[.properties]
   jackson:
     default-property-inclusion: non_null
     serialization:

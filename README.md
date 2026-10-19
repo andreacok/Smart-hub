@@ -24,6 +24,9 @@ SmartThings  →  backend Spring Boot (token, cache, normalizzazione)  →  API 
 | Docker + Docker Compose | opzionale (Compose v2.24+) | avvio con un solo comando |
 
 Con VS Code: aprendo il progetto vengono suggerite le estensioni Java/Spring (`.vscode/extensions.json`).
+Nel pannello *Run and Debug* trovi le configurazioni "Backend (Spring Boot)", "Frontend (Vite)" e
+"Smart Hub (backend + frontend)" che avvia entrambi; la configurazione del backend richiede che esista il file `.env`
+(basta una copia di `.env.example`).
 
 ---
 
@@ -79,20 +82,24 @@ Il backend supporta due tipi di credenziali.
    - *Devices*: List all devices, See all devices, Control all devices
    - *Locations*: See all locations
    - *Scenes*: See all scenes, Control all scenes (facoltativo: senza, la sezione Scene resta vuota)
-3. **Dove inserirlo**: copia `.env.example` in `.env` nella root del progetto (il file `.env` non viene committato),
-   oppure esporta le variabili nel terminale.
-4. **Variabili da impostare**:
+3. **Dove inserirlo**: nel file `.env` nella root del progetto, che resta solo sul tuo computer
+   (è in `.gitignore`). Il backend lo legge da solo, sia con `mvn spring-boot:run` sia da VS Code e Docker:
 
    ```bash
-   export SMARTTHINGS_MODE=live
-   export SMARTTHINGS_AUTH=pat
-   export SMARTTHINGS_TOKEN=il-tuo-token
+   cp .env.example .env
+   ```
+4. **Variabili da impostare** nel `.env`:
+
+   ```properties
+   SMARTTHINGS_MODE=live
+   SMARTTHINGS_AUTH=pat
+   SMARTTHINGS_TOKEN=il-tuo-token
    # facoltativo, se hai più "case" nell'account:
-   export SMARTTHINGS_LOCATION_ID=...
-   cd backend && mvn spring-boot:run
+   SMARTTHINGS_LOCATION_ID=
    ```
 
-   Su Windows (PowerShell): `$env:SMARTTHINGS_MODE="live"` ecc.
+   Poi `cd backend && mvn spring-boot:run`. In alternativa puoi esportare le stesse variabili nel terminale
+   (hanno la precedenza sul file `.env`).
 
 5. **Verifica la connessione**: apri http://localhost:8080/api/system/status
 
