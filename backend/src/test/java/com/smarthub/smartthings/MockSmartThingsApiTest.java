@@ -25,7 +25,7 @@ class MockSmartThingsApiTest {
     void demoHomeContainsRequiredRoomsAndDevices() {
         String location = api.listLocations().get(0).locationId();
         List<String> rooms = api.listRooms(location).stream().map(r -> r.name()).toList();
-        assertTrue(rooms.containsAll(List.of("Soggiorno", "Camera", "Cucina", "Balcone")));
+        assertTrue(rooms.containsAll(List.of("Salotto", "Camera da Letto", "Cucina", "Corridoio")));
 
         List<StDevice> devices = api.listDevices(location);
         assertTrue(devices.size() >= 10);
@@ -35,13 +35,13 @@ class MockSmartThingsApiTest {
 
     @Test
     void switchCommandChangesStatus() {
-        api.executeCommands("soggiorno-piantana", List.of(StCommand.of("switch", "on")));
-        assertEquals("on", api.getDeviceStatus("soggiorno-piantana").attribute("switch", "switch").orElseThrow().value());
+        api.executeCommands("salotto-piantana", List.of(StCommand.of("switch", "on")));
+        assertEquals("on", api.getDeviceStatus("salotto-piantana").attribute("switch", "switch").orElseThrow().value());
     }
 
     @Test
     void shutterMovesGraduallyToTarget() {
-        String id = "camera-tapparella"; // parte chiusa (0%)
+        String id = "camera-da-letto-tapparella"; // parte chiusa (0%)
         api.executeCommands(id, List.of(StCommand.of("windowShade", "open")));
 
         clock.advance(Duration.ofSeconds(2));
@@ -56,14 +56,14 @@ class MockSmartThingsApiTest {
 
     @Test
     void offlineDeviceRejectsCommands() {
-        assertFalse(api.getDeviceHealth("balcone-videocamera").isOnline());
+        assertFalse(api.getDeviceHealth("corridoio-videocamera").isOnline());
         assertThrows(SmartThingsException.class,
-                () -> api.executeCommands("balcone-videocamera", List.of(StCommand.of("switch", "off"))));
+                () -> api.executeCommands("corridoio-videocamera", List.of(StCommand.of("switch", "off"))));
     }
 
     @Test
     void sceneAppliesCommands() {
         api.executeScene("scene-buonanotte");
-        assertEquals("off", api.getDeviceStatus("soggiorno-lampadario").attribute("switch", "switch").orElseThrow().value());
+        assertEquals("off", api.getDeviceStatus("salotto-lampadario").attribute("switch", "switch").orElseThrow().value());
     }
 }

@@ -146,82 +146,99 @@ public class MockSmartThingsApi implements SmartThingsApi {
 
     // ----------------------------------------------------------- casa demo
 
+    /**
+     * Stanze ufficiali di SmartHub (Salotto, Camera da Letto, Cameretta, Cucina, Bagno Grande, Bagno Piccolo,
+     * Corridoio) più Ripostiglio, stanza di test con nome non ufficiale: deve ricevere la foto di default.
+     */
     private void buildHome() {
-        room("soggiorno", "Soggiorno");
-        room("camera", "Camera");
+        room("salotto", "Salotto");
+        room("camera-da-letto", "Camera da Letto");
+        room("cameretta", "Cameretta");
         room("cucina", "Cucina");
-        room("bagno", "Bagno");
-        room("studio", "Studio");
-        room("balcone", "Balcone");
-        room("ingresso", "Ingresso");
+        room("bagno-grande", "Bagno Grande");
+        room("bagno-piccolo", "Bagno Piccolo");
+        room("corridoio", "Corridoio");
+        room("ripostiglio", "Ripostiglio");
 
-        // Soggiorno
-        light("soggiorno-lampadario", "Lampadario", "soggiorno", true, 75).set(COLOR_TEMPERATURE, "colorTemperature", 3000, "K");
-        light("soggiorno-piantana", "Piantana", "soggiorno", false, 50);
-        light("soggiorno-led-tv", "LED TV", "soggiorno", true, 40)
+        // Salotto
+        light("salotto-lampadario", "Lampadario", "salotto", true, 75).set(COLOR_TEMPERATURE, "colorTemperature", 3000, "K");
+        light("salotto-piantana", "Piantana", "salotto", false, 50);
+        light("salotto-led-tv", "LED TV", "salotto", true, 40)
                 .set(COLOR_CONTROL, "hue", 66.0).set(COLOR_CONTROL, "saturation", 80.0);
-        shutter("soggiorno-tapparella-finestra", "Tapparella finestra", "soggiorno", 80);
-        shutter("soggiorno-tapparella-balcone", "Tapparella balcone", "soggiorno", 35);
-        add(new MockDevice("soggiorno-termostato", "Termostato", "soggiorno", LOCATION_ID, "Thermostat")
+        shutter("salotto-tapparella-finestra", "Tapparella finestra", "salotto", 80);
+        shutter("salotto-tapparella-balcone", "Tapparella balcone", "salotto", 35);
+        add(new MockDevice("salotto-porta-finestra", "Porta finestra balcone", "salotto", LOCATION_ID, "ContactSensor")
+                .set(CONTACT, "contact", "open")
+                .set(BATTERY, "battery", 91, "%"));
+        add(new MockDevice("salotto-termostato", "Termostato", "salotto", LOCATION_ID, "Thermostat")
                 .simulatedTemperature(21.2, 0.0)
                 .set(THERMOSTAT_HEATING_SETPOINT, "heatingSetpoint", 21.5, "C")
                 .set(THERMOSTAT_MODE, "thermostatMode", "heat")
                 .set(THERMOSTAT_MODE, "supportedThermostatModes", List.of("off", "heat", "eco", "auto"))
                 .set(THERMOSTAT_OPERATING_STATE, "thermostatOperatingState", "idle"));
-        add(new MockDevice("soggiorno-sensore-clima", "Sensore clima", "soggiorno", LOCATION_ID, "MultiFunctionalSensor")
+        add(new MockDevice("salotto-sensore-clima", "Sensore clima", "salotto", LOCATION_ID, "MultiFunctionalSensor")
                 .simulatedTemperature(22.4, 0.7)
                 .set(HUMIDITY, "humidity", 48, "%")
                 .set(BATTERY, "battery", 86, "%"));
 
-        // Camera
-        light("camera-luce", "Luce principale", "camera", false, 100);
-        light("camera-comodino", "Comodino", "camera", true, 30).set(COLOR_TEMPERATURE, "colorTemperature", 2700, "K");
-        shutter("camera-tapparella", "Tapparella", "camera", 0);
-        add(new MockDevice("camera-sensore-temperatura", "Sensore temperatura", "camera", LOCATION_ID, "TemperatureSensor")
+        // Camera da Letto
+        light("camera-da-letto-luce", "Luce principale", "camera-da-letto", false, 100);
+        light("camera-da-letto-comodino", "Lampada comodino", "camera-da-letto", true, 30)
+                .set(COLOR_TEMPERATURE, "colorTemperature", 2700, "K");
+        shutter("camera-da-letto-tapparella", "Tapparella", "camera-da-letto", 0);
+        add(new MockDevice("camera-da-letto-sensore", "Sensore temperatura", "camera-da-letto", LOCATION_ID, "TemperatureSensor")
                 .simulatedTemperature(20.1, 1.9)
                 .set(BATTERY, "battery", 14, "%"));
 
+        // Cameretta
+        light("cameretta-luce", "Luce principale", "cameretta", false, 100);
+        light("cameretta-scrivania", "Luce scrivania", "cameretta", true, 90)
+                .set(COLOR_TEMPERATURE, "colorTemperature", 4500, "K");
+        shutter("cameretta-tapparella", "Tapparella", "cameretta", 50);
+        add(new MockDevice("cameretta-sensore", "Sensore temperatura", "cameretta", LOCATION_ID, "TemperatureSensor")
+                .simulatedTemperature(21.0, 0.0)
+                .set(BATTERY, "battery", 81, "%"));
+
         // Cucina
-        add(new MockDevice("cucina-luce", "Luce cucina", "cucina", LOCATION_ID, "Light")
+        add(new MockDevice("cucina-luce", "Luce principale", "cucina", LOCATION_ID, "Light")
+                .set(SWITCH, "switch", "on"));
+        add(new MockDevice("cucina-piano", "Luce piano cucina", "cucina", LOCATION_ID, "Light")
                 .set(SWITCH, "switch", "on"));
         add(new MockDevice("cucina-presa-caffe", "Macchina caffè", "cucina", LOCATION_ID, "SmartPlug")
                 .set(SWITCH, "switch", "off")
                 .set(POWER_METER, "nominal", 1150.0, "W")
                 .set(POWER_METER, "power", 0.0, "W"));
 
-        // Bagno
-        add(new MockDevice("bagno-luce", "Luce bagno", "bagno", LOCATION_ID, "Light")
+        // Bagno Grande
+        add(new MockDevice("bagno-grande-luce", "Luce principale", "bagno-grande", LOCATION_ID, "Light")
                 .set(SWITCH, "switch", "off"));
-        add(new MockDevice("bagno-sensore", "Sensore umidità", "bagno", LOCATION_ID, "MultiFunctionalSensor")
+        add(new MockDevice("bagno-grande-specchio", "Luce specchio", "bagno-grande", LOCATION_ID, "Light")
+                .set(SWITCH, "switch", "off"));
+        add(new MockDevice("bagno-grande-sensore", "Sensore temperatura e umidità", "bagno-grande", LOCATION_ID, "MultiFunctionalSensor")
                 .simulatedTemperature(23.0, 3.1)
                 .set(HUMIDITY, "humidity", 64, "%")
                 .set(BATTERY, "battery", 72, "%"));
 
-        // Studio
-        light("studio-scrivania", "Lampada scrivania", "studio", true, 90).set(COLOR_TEMPERATURE, "colorTemperature", 4500, "K");
-        add(new MockDevice("studio-presa-pc", "Presa PC", "studio", LOCATION_ID, "SmartPlug")
-                .set(SWITCH, "switch", "on")
-                .set(POWER_METER, "nominal", 86.0, "W")
-                .set(POWER_METER, "power", 86.0, "W"));
-
-        // Balcone
-        add(new MockDevice("balcone-luce", "Luce esterna", "balcone", LOCATION_ID, "Light")
+        // Bagno Piccolo
+        add(new MockDevice("bagno-piccolo-luce", "Luce", "bagno-piccolo", LOCATION_ID, "Light")
                 .set(SWITCH, "switch", "off"));
-        add(new MockDevice("balcone-porta", "Porta finestra", "balcone", LOCATION_ID, "ContactSensor")
-                .set(CONTACT, "contact", "open")
-                .set(BATTERY, "battery", 91, "%"));
-        add(new MockDevice("balcone-videocamera", "Videocamera", "balcone", LOCATION_ID, "Camera")
+        add(new MockDevice("bagno-piccolo-sensore", "Sensore temperatura e umidità", "bagno-piccolo", LOCATION_ID, "MultiFunctionalSensor")
+                .simulatedTemperature(22.6, 0.4)
+                .set(HUMIDITY, "humidity", 58, "%")
+                .set(BATTERY, "battery", 94, "%"));
+
+        // Corridoio
+        light("corridoio-luce", "Luce corridoio", "corridoio", true, 60);
+        add(new MockDevice("corridoio-movimento", "Sensore movimento", "corridoio", LOCATION_ID, "MotionSensor")
+                .simulatedMotion()
+                .set(BATTERY, "battery", 67, "%"));
+        add(new MockDevice("corridoio-videocamera", "Videocamera", "corridoio", LOCATION_ID, "Camera")
                 .set(SWITCH, "switch", "on")
                 .set(VIDEO_CAMERA, "camera", "on")
                 .offline());
 
-        // Ingresso
-        add(new MockDevice("ingresso-movimento", "Sensore movimento", "ingresso", LOCATION_ID, "MotionSensor")
-                .simulatedMotion()
-                .set(BATTERY, "battery", 67, "%"));
-        add(new MockDevice("ingresso-porta", "Porta ingresso", "ingresso", LOCATION_ID, "ContactSensor")
-                .set(CONTACT, "contact", "closed")
-                .set(BATTERY, "battery", 88, "%"));
+        // Ripostiglio: stanza di test, nome non ufficiale
+        light("ripostiglio-luce", "Luce ripostiglio", "ripostiglio", false, 100);
 
         // Scene
         scene("scene-buongiorno", "Buongiorno", "sunrise", d -> {
@@ -234,10 +251,10 @@ public class MockSmartThingsApi implements SmartThingsApi {
             return List.of();
         });
         scene("scene-film", "Film", "movie", d -> switch (d.id()) {
-            case "soggiorno-lampadario" -> List.of(StCommand.of(SWITCH_LEVEL, "setLevel", 15));
-            case "soggiorno-piantana" -> List.of(StCommand.of(SWITCH, "off"));
-            case "soggiorno-led-tv" -> List.of(StCommand.of(SWITCH, "on"), StCommand.of(SWITCH_LEVEL, "setLevel", 35));
-            case "soggiorno-tapparella-finestra", "soggiorno-tapparella-balcone" ->
+            case "salotto-lampadario" -> List.of(StCommand.of(SWITCH_LEVEL, "setLevel", 15));
+            case "salotto-piantana" -> List.of(StCommand.of(SWITCH, "off"));
+            case "salotto-led-tv" -> List.of(StCommand.of(SWITCH, "on"), StCommand.of(SWITCH_LEVEL, "setLevel", 35));
+            case "salotto-tapparella-finestra", "salotto-tapparella-balcone" ->
                     List.of(StCommand.of(WINDOW_SHADE_LEVEL, "setShadeLevel", 10));
             default -> List.of();
         });

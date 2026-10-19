@@ -34,29 +34,29 @@ class ApiIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.location.name").value("Casa Demo"))
                 .andExpect(jsonPath("$.mode").value("mock"))
-                .andExpect(jsonPath("$.rooms", hasSize(7)))
+                .andExpect(jsonPath("$.rooms", hasSize(8)))
                 .andExpect(jsonPath("$.summary.devicesTotal").value(greaterThan(10)))
                 .andExpect(jsonPath("$.scenes", hasSize(4)));
     }
 
     @Test
     void roomDetailContainsDevices() throws Exception {
-        mvc.perform(get("/api/rooms/soggiorno"))
+        mvc.perform(get("/api/rooms/salotto"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.room.name").value("Soggiorno"))
+                .andExpect(jsonPath("$.room.name").value("Salotto"))
                 .andExpect(jsonPath("$.devices[0].type").value("LIGHT"));
     }
 
     @Test
     void commandUpdatesDeviceState() throws Exception {
-        mvc.perform(post("/api/devices/camera-luce/commands")
+        mvc.perform(post("/api/devices/camera-da-letto-luce/commands")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"command\":\"SET_BRIGHTNESS\",\"value\":40}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.state.power").value("ON"))
                 .andExpect(jsonPath("$.state.brightness").value(40));
 
-        mvc.perform(get("/api/devices/camera-luce/status"))
+        mvc.perform(get("/api/devices/camera-da-letto-luce/status"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.state.brightness").value(40));
     }
@@ -72,7 +72,7 @@ class ApiIntegrationTest {
                         .content("{\"command\":\"SET_BRIGHTNESS\",\"value\":40}"))
                 .andExpect(status().isBadRequest());
 
-        mvc.perform(post("/api/devices/balcone-videocamera/commands")
+        mvc.perform(post("/api/devices/corridoio-videocamera/commands")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"command\":\"TURN_OFF\"}"))
                 .andExpect(status().isConflict())

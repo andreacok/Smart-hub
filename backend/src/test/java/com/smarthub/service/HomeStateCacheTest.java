@@ -38,12 +38,12 @@ class HomeStateCacheTest {
     @Test
     void loadsNormalizedHome() {
         assertEquals("Casa Demo", cache.location().name());
-        assertEquals(7, cache.rooms().size());
-        Device lampadario = cache.device("soggiorno-lampadario").orElseThrow();
+        assertEquals(8, cache.rooms().size());
+        Device lampadario = cache.device("salotto-lampadario").orElseThrow();
         assertEquals(DeviceType.LIGHT, lampadario.type());
         assertEquals(PowerState.ON, lampadario.state().power());
         assertEquals(75, lampadario.state().brightness());
-        assertFalse(cache.device("balcone-videocamera").orElseThrow().online());
+        assertFalse(cache.device("corridoio-videocamera").orElseThrow().online());
         assertFalse(events.isEmpty());
     }
 
@@ -55,9 +55,9 @@ class HomeStateCacheTest {
         assertTrue(alerts.stream().anyMatch(a -> a.kind() == AlertDto.Kind.LOW_BATTERY));
         assertTrue(alerts.stream().anyMatch(a -> a.kind() == AlertDto.Kind.OPEN_CONTACT));
 
-        Room soggiorno = cache.rooms().stream().filter(r -> r.id().equals("soggiorno")).findFirst().orElseThrow();
+        Room soggiorno = cache.rooms().stream().filter(r -> r.id().equals("salotto")).findFirst().orElseThrow();
         RoomSummaryDto summary = HomeAggregator.roomSummary(soggiorno,
-                devices.stream().filter(d -> "soggiorno".equals(d.roomId())).toList(), alerts);
+                devices.stream().filter(d -> "salotto".equals(d.roomId())).toList(), alerts);
         assertEquals(2, summary.lightsOn());
         assertEquals(3, summary.lightsTotal());
         assertEquals(2, summary.shutterCount());
