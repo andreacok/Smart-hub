@@ -2,6 +2,7 @@ import { EmptyState, ErrorState, LoadingState } from '../components/common/PageS
 import { RoomCard } from '../components/home/RoomCard';
 import { useHome } from '../hooks/useHome';
 import { pluralize } from '../lib/format';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
 
 /** Elenco di tutte le stanze, con la stessa card fotografica della Home. */
@@ -18,6 +19,7 @@ export function RoomsPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>Stanze</h1>
         <p className={styles.subtitle}>{pluralize(home.rooms.length, 'stanza', 'stanze')} nella casa</p>
+              <ThemeToggle className={styles.themeSwitch} />
       </header>
       {home.rooms.length === 0 ? (
         <EmptyState

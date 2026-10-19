@@ -1,6 +1,7 @@
 import { ErrorState, LoadingState } from '../components/common/PageState';
 import { useSystemStatus } from '../hooks/useSystemStatus';
 import { relativeTime } from '../lib/format';
+import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
 
 /** Altro: stato del sistema e della connessione con SmartThings. */
@@ -20,6 +21,7 @@ export function MorePage() {
       <header className={styles.header}>
         <h1 className={styles.title}>Altro</h1>
         <p className={styles.subtitle}>Stato del sistema</p>
+              <ThemeToggle className={styles.themeSwitch} />
       </header>
 
       <dl className={styles.stats}>
