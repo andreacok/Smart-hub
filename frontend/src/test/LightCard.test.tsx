@@ -63,7 +63,9 @@ describe('LightCard', () => {
 
     await user.click(screen.getByRole('button', { name: 'Lampadario: accendi' }));
 
-    expect(await screen.findByText('Lampadario: SmartThings non raggiungibile')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Impossibile accendere "Lampadario". SmartThings ha restituito un errore.'),
+    ).toBeInTheDocument();
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Lampadario: accendi' })).toHaveAttribute('aria-pressed', 'false'),
     );

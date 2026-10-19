@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { resetRoomImage, uploadRoomImage } from '../api/roomImageApi';
 import type { Home, RoomDetail, RoomImage, RoomSummary } from '../api/types';
 import { useToast } from '../components/feedback/toastContext';
+import { errorMessage } from '../lib/apiErrors';
 import { prepareRoomImage } from '../lib/roomImageFile';
 import { queryKeys } from '../lib/queryKeys';
 
@@ -55,7 +56,7 @@ export function useRoomPhotoEditor(room: RoomSummary, options: { onDone?: () => 
       options.onDone?.();
     },
     // In caso di errore l'anteprima resta: l'utente può riprovare o annullare.
-    onError: (error) => toast.show(error.message, 'error'),
+    onError: (error) => toast.show(errorMessage(error), 'error'),
   });
 
   const reset = useMutation<RoomImage, Error>({
@@ -66,7 +67,7 @@ export function useRoomPhotoEditor(room: RoomSummary, options: { onDone?: () => 
       toast.show('Foto predefinita ripristinata', 'success');
       options.onDone?.();
     },
-    onError: (error) => toast.show(error.message, 'error'),
+    onError: (error) => toast.show(errorMessage(error), 'error'),
   });
 
   const busy = preparing || upload.isPending || reset.isPending;

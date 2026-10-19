@@ -1,21 +1,25 @@
 package com.smarthub.smartthings.api;
 
-/** Errore nella comunicazione con SmartThings (rete, timeout, autenticazione, risposta non valida). */
+import com.smarthub.smartthings.error.SmartThingsError;
+
+/**
+ * Errore nella comunicazione con SmartThings. Porta un {@link SmartThingsError} già classificato:
+ * il {@code GlobalExceptionHandler} lo converte nella risposta REST senza doverlo interpretare di nuovo.
+ */
 public class SmartThingsException extends RuntimeException {
 
-    private final int status;
+    private final transient SmartThingsError error;
 
-    public SmartThingsException(String message) {
-        this(message, 0, null);
+    public SmartThingsException(SmartThingsError error) {
+        this(error, null);
     }
 
-    public SmartThingsException(String message, int status, Throwable cause) {
-        super(message, cause);
-        this.status = status;
+    public SmartThingsException(SmartThingsError error, Throwable cause) {
+        super(error.message(), cause);
+        this.error = error;
     }
 
-    /** Status HTTP restituito da SmartThings, 0 se non disponibile. */
-    public int getStatus() {
-        return status;
+    public SmartThingsError error() {
+        return error;
     }
 }

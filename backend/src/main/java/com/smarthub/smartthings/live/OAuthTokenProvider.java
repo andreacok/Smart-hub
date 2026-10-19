@@ -1,8 +1,13 @@
 package com.smarthub.smartthings.live;
 
+import java.util.List;
+import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smarthub.config.SmartThingsProperties;
 import com.smarthub.smartthings.api.SmartThingsException;
+import com.smarthub.smartthings.error.SmartThingsErrorMapper;
+import com.smarthub.smartthings.error.SmartThingsOperation;
+import com.smarthub.error.ApiErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -63,11 +68,28 @@ public class OAuthTokenProvider implements TokenProvider {
     }
 
     @Override
+    public List<String> secrets() {
+        StoredTokens current = tokens;
+        if (current == null) {
+            return List.of();
+        }
+        List<String> secrets = new ArrayList<>();
+        if (current.accessToken() != null) {
+            secrets.add(current.accessToken());
+        }
+        if (current.refreshToken() != null) {
+            secrets.add(current.refreshToken());
+        }
+        return secrets;
+    }
+
+    @Override
     public synchronized String accessToken() {
         StoredTokens current = tokens;
         if (current == null || current.refreshToken() == null) {
-            throw new SmartThingsException(
-                    "SmartThings non ancora autorizzato: apri /api/auth/smartthings/login", 401, null);
+            throw new SmartThingsException(SmartThingsErrorMapper.custom(SmartThingsOperation.AUTH,
+                    ApiErrorCode.SMARTTHINGS_UNAUTHORIZED, null,
+                    "Autorizzazione OAuth mancante: avvia il login da /api/auth/smartthings/login"));
         }
         if (current.accessToken() != null && current.expiresAt().isAfter(Instant.now().plus(EXPIRY_MARGIN))) {
             return current.accessToken();
@@ -152,14 +174,14 @@ public class OAuthTokenProvider implements TokenProvider {
                     })
                     .timeout(timeout)
                     .block();
-        } catch (WebClientResponseException e) {
-            throw new SmartThingsException("Richiesta token OAuth rifiutata da SmartThings (" + e.getStatusCode().value()
-                    + "): " + e.getResponseBodyAsString(), e.getStatusCode().value(), e);
         } catch (RuntimeException e) {
-            throw new SmartThingsException("Errore durante la richiesta del token OAuth: " + e.getMessage(), 0, e);
+            // Il body di SmartThings viene classificato dal mapper e mai inoltrato grezzo.
+            throw new SmartThingsException(
+                    SmartThingsErrorMapper.redact(SmartThingsErrorMapper.fromException(SmartThingsOperation.AUTH, null, e), secrets()), e);
         }
         if (body == null || body.get("access_token") == null) {
-            throw new SmartThingsException("Risposta token OAuth non valida", 502, null);
+            throw new SmartThingsException(SmartThingsErrorMapper.badResponse(SmartThingsOperation.AUTH, null,
+                    "Risposta del token OAuth senza access_token"));
         }
         String access = body.get("access_token").toString();
         Object refreshValue = body.get("refresh_token");

@@ -71,7 +71,7 @@ public class DeviceService {
     public DeviceDto execute(String id, CommandRequest request) {
         Device device = find(id);
         if (!device.online()) {
-            throw new DeviceOfflineException(device.name());
+            throw new DeviceOfflineException(device.id(), device.name());
         }
         StDevice raw = cache.rawDevice(id).orElseThrow(() -> notFound(id));
         DeviceCommand command = new DeviceCommand(request.command(), request.value());

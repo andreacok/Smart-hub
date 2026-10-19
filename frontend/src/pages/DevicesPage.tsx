@@ -1,6 +1,7 @@
 import { EmptyState, ErrorState, LoadingState } from '../components/common/PageState';
 import { DeviceSection } from '../components/room/DeviceSection';
 import { useDevices } from '../hooks/useDevices';
+import { errorMessage } from '../lib/apiErrors';
 import { groupDevices } from '../lib/grouping';
 import { pluralize } from '../lib/format';
 import { ThemeToggle } from '../components/layout/ThemeToggle';
@@ -8,11 +9,11 @@ import styles from './CollectionPage.module.css';
 
 /** Tutti i dispositivi della casa, raggruppati per tipo come nella Room View. */
 export function DevicesPage() {
-  const { data: devices, isPending, isError } = useDevices();
+  const { data: devices, error, isPending, isError } = useDevices();
 
   if (isPending) return <LoadingState label="Caricamento dei dispositivi" />;
   if (isError && !devices) {
-    return <ErrorState title="Impossibile caricare i dispositivi" message="Riprova tra qualche istante." />;
+    return <ErrorState title="Impossibile caricare i dispositivi" message={errorMessage(error)} />;
   }
 
   const groups = groupDevices(devices);

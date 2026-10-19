@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/endpoints';
+import { commandErrorMessage } from '../lib/apiErrors';
 import type { Device, DeviceCommand, Home, RoomDetail } from '../api/types';
 import { useToast } from '../components/feedback/toastContext';
 import { predictDevice } from '../lib/predict';
@@ -44,12 +45,12 @@ export function useDeviceCommand() {
       return snapshot;
     },
 
-    onError: (error, { device }, snapshot) => {
+    onError: (error, { device, command }, snapshot) => {
       if (snapshot) {
         queryClient.setQueryData(queryKeys.home, snapshot.home);
         queryClient.setQueryData(queryKeys.room(device.roomId), snapshot.room);
       }
-      toast.show(`${device.name}: ${error.message}`, 'error');
+      toast.show(commandErrorMessage(device, command.command, error), 'error');
     },
 
     onSuccess: (updated, { device }) => {

@@ -1,17 +1,18 @@
 import { EmptyState, ErrorState, LoadingState } from '../components/common/PageState';
 import { RoomCard } from '../components/home/RoomCard';
 import { useHome } from '../hooks/useHome';
+import { errorMessage } from '../lib/apiErrors';
 import { pluralize } from '../lib/format';
 import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
 
 /** Elenco di tutte le stanze, con la stessa card fotografica della Home. */
 export function RoomsPage() {
-  const { data: home, isPending, isError, refetch } = useHome();
+  const { data: home, error, isPending, isError, refetch } = useHome();
 
   if (isPending) return <LoadingState label="Caricamento delle stanze" />;
   if (isError && !home) {
-    return <ErrorState title="Impossibile caricare le stanze" message="Riprova tra qualche istante." />;
+    return <ErrorState title="Impossibile caricare le stanze" message={errorMessage(error)} />;
   }
 
   return (

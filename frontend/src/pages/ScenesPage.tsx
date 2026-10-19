@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { EmptyState, ErrorState, LoadingState } from '../components/common/PageState';
 import { useExecuteScene } from '../hooks/useActions';
 import { useHome } from '../hooks/useHome';
+import { errorMessage } from '../lib/apiErrors';
 import type { Scene } from '../api/types';
 import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
@@ -21,12 +22,12 @@ function sceneIcon(scene: Scene): LucideIcon {
 
 /** Elenco delle scene della casa. Eseguire una scena è un'azione non distruttiva: nessuna conferma. */
 export function ScenesPage() {
-  const { data: home, isPending, isError } = useHome();
+  const { data: home, error, isPending, isError } = useHome();
   const scene = useExecuteScene();
 
   if (isPending) return <LoadingState label="Caricamento delle scene" />;
   if (isError && !home) {
-    return <ErrorState title="Impossibile caricare le scene" message="Riprova tra qualche istante." />;
+    return <ErrorState title="Impossibile caricare le scene" message={errorMessage(error)} />;
   }
 
   const scenes = home.scenes;
