@@ -179,11 +179,46 @@ docker compose up --build
 Apri **http://localhost:8088** (porta modificabile con `SMARTHUB_PORT`).
 
 - `frontend`: build Vite servita da Nginx, che inoltra `/api` al backend (stessa origine, niente CORS).
-- `backend`: Spring Boot, non esposto all'esterno; i token OAuth sono nel volume `smarthub-data`.
+- `backend`: Spring Boot, non esposto all'esterno. I dati runtime (token OAuth SmartThings e foto personalizzate
+  delle stanze) sono nel volume `smarthub-data`, montato su `/data`: sopravvivono alla ricreazione dei container
+  e al `docker compose up --build`.
 - Le immagini base sono multi-architettura (amd64 e arm64): funzionano su mini PC, NAS, server Linux
   e Raspberry Pi con sistema operativo a 64 bit (Raspberry Pi 4/5 consigliati).
 
 Per aggiornare dopo un `git pull`: `docker compose up --build -d`.
+
+### Migrazione dal volume precedente
+
+Fino a questa versione il backend salvava il token OAuth in `/app/data`. Ora la cartella dei dati è `/data`
+(variabile `SMARTHUB_DATA_DIR`). Se usavi l'OAuth, copia `smartthings-oauth.json` dal vecchio volume prima di
+avviare la nuova versione, altrimenti dovrai rifare l'accesso a SmartThings. In modalità mock non serve nulla.
+
+---
+
+## Fotografie delle stanze
+
+Ogni stanza ha una fotografia predefinita, inclusa nell'app. Puoi sostituirla con una tua foto dalla pagina
+della stanza: tocca la matita in alto a destra della foto.
+
+- **Priorità**: foto personalizzata → foto predefinita della stanza → immagine generica `default-room`.
+- **Identificazione**: la foto è legata all'ID della stanza, non al nome. Se SmartThings rinomina la stanza, la
+  foto resta. Il nome serve solo a scegliere la foto predefinita.
+- **Dove sono salvate**: in `<SMARTHUB_DATA_DIR>/room-images/` (default locale `./data/room-images/`, in Docker
+  `/data/room-images/`). Un file `index.json` collega ogni stanza alla sua foto. Le foto caricate non vanno mai in
+  `frontend/src/assets`: quelle sono solo le immagini predefinite dell'app.
+- **Formati accettati**: JPEG, PNG, WebP e HEIC/HEIF (foto dell'iPhone). Le foto HEIC e WebP vengono convertite nel
+  browser prima dell'invio. Il server accetta JPEG e PNG, e verifica il contenuto reale del file, non il nome o il
+  tipo dichiarato.
+- **Limiti**: massimo 10 MB per file. Le foto vengono ridimensionate al lato lungo di 2400 px, ricodificate in
+  JPEG e private di EXIF e GPS, quindi la posizione del luogo dello scatto non viene salvata.
+- **Persistenza**: il volume Docker `smarthub-data` conserva le foto anche dopo il rebuild dei container. In locale
+  restano finché non cancelli `backend/data/`.
+- **Ripristino**: "Ripristina foto predefinita" elimina solo la foto personalizzata. Gli asset built-in non
+  vengono toccati.
+
+Endpoint: `POST /api/rooms/{roomId}/image` (multipart, campo `file`), `GET /api/rooms/{roomId}/image/content`,
+`DELETE /api/rooms/{roomId}/image`. Il DTO di ogni stanza include `imageUrl` (versionato con `?v=`) e
+`customImage`.
 
 ---
 
@@ -319,6 +354,7 @@ Le principali:
 | `SMARTTHINGS_STRUCTURE_REFRESH_INTERVAL` | `5m` | polling struttura |
 | `SMARTTHINGS_REQUEST_TIMEOUT` | `10s` | timeout per richiesta |
 | `SMARTHUB_OWNER_NAME` | | nome nel saluto |
+| `SMARTHUB_DATA_DIR` | `./data` | cartella dei dati runtime (foto stanze, indice). Docker: `/data` |
 | `SMARTHUB_API_DOCS_ENABLED` | `true` | Swagger UI e `/v3/api-docs` |
 | `SMARTHUB_CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | solo sviluppo senza proxy |
 

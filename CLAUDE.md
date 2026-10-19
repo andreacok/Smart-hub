@@ -73,6 +73,15 @@ Any other room must be supported through the fallback (`default-room`).
 - Assets live in `frontend/src/assets/rooms/` as WebP, cropped from `docs/design-reference/09-room-assets-collage.png`, with no text or UI baked in.
 - Responsive crops are set per room with `desktop`, `tablet` and `mobile` object positions, if needed.
 
+## User-uploaded room photos
+
+- Built-in room imagery is application UI content. User-uploaded room imagery is runtime user data and must never be stored under `frontend/src/assets`.
+- Custom photos are keyed by `roomId`, never by room name: SmartThings may rename rooms. The name only selects the built-in fallback.
+- Resolution order: custom image (`imageUrl` from the backend) → built-in image for the room name (`resolveRoomImage`) → `default-room.webp`. Use `resolveRoomPhoto` everywhere a room photo is shown, so Home and Room View stay consistent.
+- The backend stores custom photos under `<SMARTHUB_DATA_DIR>/room-images/` (Docker: `/data`), with a UUID file name and an atomic `index.json`. It validates content by magic bytes, re-encodes to JPEG (no EXIF/GPS) and caps the size at 10 MB.
+- Image URLs are versioned (`?v=<updatedAt>`), so a replaced photo is never served from browser cache.
+- Visual QA is mandatory for any image upload UX: check the sheet on mobile and desktop, the error toasts above the sheet, and that a new photo appears without reload.
+
 ## Mock data
 
 The demo home uses the official rooms plus `Ripostiglio`, an unofficial test room that must always show the default photo.

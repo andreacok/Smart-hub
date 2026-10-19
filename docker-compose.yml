@@ -12,8 +12,8 @@ services:
     environment:
       SMARTTHINGS_MODE: ${SMARTTHINGS_MODE:-mock}
     volumes:
-      # token OAuth SmartThings (il refresh token ruota: deve sopravvivere ai riavvii)
-      - smarthub-data:/app/data
+      # Dati runtime persistenti: token OAuth SmartThings (il refresh token ruota) e foto personalizzate delle stanze
+      - smarthub-data:/data
     expose:
       - "8080"
 
