@@ -12,10 +12,12 @@ RUN mvn -B -q package -DskipTests
 # Immagine multi-architettura (amd64 / arm64): gira su mini PC, NAS e Raspberry Pi a 64 bit.
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-RUN useradd --system --uid 1001 smarthub && mkdir -p /app/data && chown smarthub /app/data
+# /data: dati runtime persistenti (foto stanze, token OAuth). Va montato come volume Docker.
+RUN useradd --system --uid 1001 smarthub && mkdir -p /data && chown smarthub /data
 COPY --from=build /app/target/smart-hub-backend.jar app.jar
 USER smarthub
-ENV SMARTTHINGS_OAUTH_TOKEN_STORE=/app/data/smartthings-oauth.json \
+ENV SMARTHUB_DATA_DIR=/data \
+    SMARTTHINGS_OAUTH_TOKEN_STORE=/data/smartthings-oauth.json \
     JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75"
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

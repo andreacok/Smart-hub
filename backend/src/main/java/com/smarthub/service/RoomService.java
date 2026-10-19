@@ -28,10 +28,12 @@ public class RoomService {
 
     private final HomeStateCache cache;
     private final DeviceService deviceService;
+    private final RoomImageService roomImageService;
 
-    public RoomService(HomeStateCache cache, DeviceService deviceService) {
+    public RoomService(HomeStateCache cache, DeviceService deviceService, RoomImageService roomImageService) {
         this.cache = cache;
         this.deviceService = deviceService;
+        this.roomImageService = roomImageService;
     }
 
     public List<RoomSummaryDto> list() {
@@ -39,7 +41,7 @@ public class RoomService {
         List<AlertDto> alerts = alertsWithEffectiveRooms(devices);
         Map<Room, List<Device>> grouped = groupByRoom(devices);
         return grouped.entrySet().stream()
-                .map(e -> HomeAggregator.roomSummary(e.getKey(), e.getValue(), alerts))
+                .map(e -> roomImageService.decorate(HomeAggregator.roomSummary(e.getKey(), e.getValue(), alerts)))
                 .toList();
     }
 
@@ -52,7 +54,7 @@ public class RoomService {
                 .filter(a -> roomId.equals(a.roomId())).toList();
         Map<String, String> roomNames = deviceService.roomNames();
         List<DeviceDto> dtos = grouped.get(room).stream().map(d -> deviceService.toDto(d, roomNames)).toList();
-        return new RoomDetailDto(HomeAggregator.roomSummary(room, grouped.get(room), alerts), dtos, alerts);
+        return new RoomDetailDto(roomImageService.decorate(HomeAggregator.roomSummary(room, grouped.get(room), alerts)), dtos, alerts);
     }
 
     /** Spegne tutte le luci e le prese accese della stanza. */

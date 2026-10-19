@@ -53,7 +53,9 @@ public final class HomeAggregator {
                 shutters.size(),
                 (int) devices.stream().filter(d -> d.state().contact() == ContactState.OPEN).count(),
                 devices.stream().anyMatch(d -> Boolean.TRUE.equals(d.state().motion())),
-                roomAlerts
+                roomAlerts,
+                null,
+                false
         );
     }
 

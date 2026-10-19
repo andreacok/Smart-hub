@@ -15,6 +15,15 @@ public record RoomSummaryDto(
         int shutterCount,
         int openContacts,
         boolean motion,
-        int alertCount
+        int alertCount,
+        String imageUrl,
+        boolean customImage
 ) {
+
+    /** Copia con la fotografia personalizzata risolta (URL versionato). */
+    public RoomSummaryDto withCustomImage(String url) {
+        return new RoomSummaryDto(id, name, deviceCount, onlineCount, activeCount, lightsOn, lightsTotal,
+                temperature, humidity, shutterPosition, shutterCount, openContacts, motion, alertCount,
+                url, true);
+    }
 }

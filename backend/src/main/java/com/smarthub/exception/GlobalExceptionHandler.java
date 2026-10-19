@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
@@ -49,6 +52,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> unreadable(HttpMessageNotReadableException e, HttpServletRequest request) {
         return build(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "Body della richiesta non valido", request);
+    }
+
+    @ExceptionHandler(RoomImageException.class)
+    public ResponseEntity<ErrorResponse> roomImage(RoomImageException e, HttpServletRequest request) {
+        return build(e.getStatus(), e.getCode(), e.getMessage(), request);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> tooLarge(MaxUploadSizeExceededException e, HttpServletRequest request) {
+        return build(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE", "La foto supera il limite di 10 MB.", request);
+    }
+
+    @ExceptionHandler({MissingServletRequestPartException.class, MissingServletRequestParameterException.class})
+    public ResponseEntity<ErrorResponse> missingFile(Exception e, HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "Campo 'file' mancante nella richiesta.", request);
     }
 
     @ExceptionHandler(DeviceOfflineException.class)
