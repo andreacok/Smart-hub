@@ -12,9 +12,15 @@ export function SensorCard({ device }: { device: Device }) {
   if (s.battery !== undefined) readings.push({ label: 'Batteria', value: formatPercent(s.battery) });
 
   const alerting = s.contact === 'OPEN' || s.motion === true;
+  // Se il sensore ha solo letture numeriche, lo stato testuale ripeterebbe gli stessi valori.
+  const hasState = s.contact !== undefined || s.motion !== undefined;
 
   return (
-    <DeviceCard device={device} tone={alerting && device.online ? 'active' : 'default'}>
+    <DeviceCard
+      device={device}
+      tone={alerting && device.online ? 'active' : 'default'}
+      {...(hasState || !device.online ? {} : { status: '' })}
+    >
       {readings.length > 0 && (
         <dl className={styles.readings}>
           {readings.map((r) => (

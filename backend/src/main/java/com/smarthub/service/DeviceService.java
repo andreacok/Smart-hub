@@ -9,6 +9,7 @@ import com.smarthub.exception.NotFoundException;
 import com.smarthub.model.Device;
 import com.smarthub.model.DeviceCommand;
 import com.smarthub.model.DeviceState;
+import com.smarthub.model.OpenState;
 import com.smarthub.model.Room;
 import com.smarthub.smartthings.api.SmartThingsApi;
 import com.smarthub.smartthings.api.StCommand;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public class DeviceService {
 
     private static final Logger log = LoggerFactory.getLogger(DeviceService.class);
+    private static final int MAX_MOVEMENT_REFRESHES = 40;
 
     private final HomeStateCache cache;
     private final SmartThingsApi api;
@@ -89,7 +91,20 @@ public class DeviceService {
             cache.refreshDevice(id);
             return;
         }
-        scheduler.schedule(() -> cache.refreshDevice(id), Instant.now().plus(refreshDelay));
+        scheduler.schedule(() -> refreshWhileMoving(id, MAX_MOVEMENT_REFRESHES), Instant.now().plus(refreshDelay));
+    }
+
+    /**
+     * Rilegge il dispositivo; se è una tapparella ancora in movimento continua a seguirla
+     * più spesso del polling normale, così la posizione in UI avanza in modo fluido.
+     */
+    private void refreshWhileMoving(String id, int remaining) {
+        boolean moving = cache.refreshDevice(id)
+                .map(d -> d.state().openState() == OpenState.OPENING || d.state().openState() == OpenState.CLOSING)
+                .orElse(false);
+        if (moving && remaining > 0) {
+            scheduler.schedule(() -> refreshWhileMoving(id, remaining - 1), Instant.now().plus(refreshDelay));
+        }
     }
 
     Device find(String id) {

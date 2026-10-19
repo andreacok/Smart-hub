@@ -33,6 +33,7 @@ export function DeviceCard({
   wide = false,
 }: DeviceCardProps) {
   const battery = device.state.battery;
+  const statusText = status ?? deviceStatusText(device);
   const header = (
     <>
       <span className={styles.icon}>
@@ -40,7 +41,7 @@ export function DeviceCard({
       </span>
       <span className={styles.text}>
         <span className={styles.name}>{device.name}</span>
-        <span className={styles.status}>{status ?? deviceStatusText(device)}</span>
+        {statusText !== '' && <span className={styles.status}>{statusText}</span>}
       </span>
       {aside && <span className={styles.aside}>{aside}</span>}
     </>
