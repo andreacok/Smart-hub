@@ -3,6 +3,7 @@ package com.smarthub.smartthings;
 import com.smarthub.model.Capability;
 import com.smarthub.model.ContactState;
 import com.smarthub.model.Device;
+import com.smarthub.model.DeviceFamily;
 import com.smarthub.model.DeviceType;
 import com.smarthub.model.OpenState;
 import com.smarthub.model.OperatingState;
@@ -43,7 +44,7 @@ class DeviceNormalizerTest {
 
         Device d = normalizer.normalize(raw, status, true, now);
 
-        assertEquals(DeviceType.LIGHT, d.type());
+        assertEquals(DeviceType.LIGHT, d.deviceType());
         assertEquals(PowerState.ON, d.state().power());
         assertEquals(70, d.state().brightness());
         assertEquals(180, d.state().color().hue());
@@ -62,7 +63,7 @@ class DeviceNormalizerTest {
 
         Device d = normalizer.normalize(raw, status, true, now);
 
-        assertEquals(DeviceType.SHUTTER, d.type());
+        assertEquals(DeviceType.BLIND, d.deviceType());
         assertEquals(60, d.state().position());
         assertEquals(OpenState.PARTIALLY_OPEN, d.state().openState());
         assertNull(d.state().brightness());
@@ -76,7 +77,7 @@ class DeviceNormalizerTest {
 
         Device d = normalizer.normalize(raw, status, true, now);
 
-        assertEquals(DeviceType.SHUTTER, d.type());
+        assertEquals(DeviceType.BLIND, d.deviceType());
         assertEquals(0, d.state().position());
         assertEquals(OpenState.CLOSED, d.state().openState());
         assertTrue(d.has(Capability.POSITION));
@@ -96,7 +97,7 @@ class DeviceNormalizerTest {
 
         Device d = normalizer.normalize(raw, status, true, now);
 
-        assertEquals(DeviceType.THERMOSTAT, d.type());
+        assertEquals(DeviceType.THERMOSTAT, d.deviceType());
         assertEquals(20.5, d.state().temperature());
         assertEquals("C", d.state().temperatureUnit());
         assertEquals(21.5, d.state().targetTemperature());
@@ -114,7 +115,9 @@ class DeviceNormalizerTest {
 
         Device d = normalizer.normalize(raw, status, false, now);
 
-        assertEquals(DeviceType.SENSOR, d.type());
+        // Nessuna categoria: la contact + battery non bastano a un tipo specifico, quindi sensore generico.
+        assertEquals(DeviceType.GENERIC_SENSOR, d.deviceType());
+        assertEquals(DeviceFamily.SENSOR, d.family());
         assertEquals(ContactState.OPEN, d.state().contact());
         assertEquals(12, d.state().battery());
         assertFalse(d.online());

@@ -186,7 +186,7 @@ public class MockSmartThingsApi implements SmartThingsApi {
         light("camera-da-letto-comodino", "Lampada comodino", "camera-da-letto", true, 30)
                 .set(COLOR_TEMPERATURE, "colorTemperature", 2700, "K");
         shutter("camera-da-letto-tapparella", "Tapparella", "camera-da-letto", 0);
-        add(new MockDevice("camera-da-letto-sensore", "Sensore temperatura", "camera-da-letto", LOCATION_ID, "TemperatureSensor")
+        add(new MockDevice("camera-da-letto-sensore", "Sensore temperatura", "camera-da-letto", LOCATION_ID, "TempSensor")
                 .simulatedTemperature(20.1, 1.9)
                 .set(BATTERY, "battery", 14, "%"));
 
@@ -195,7 +195,7 @@ public class MockSmartThingsApi implements SmartThingsApi {
         light("cameretta-scrivania", "Luce scrivania", "cameretta", true, 90)
                 .set(COLOR_TEMPERATURE, "colorTemperature", 4500, "K");
         shutter("cameretta-tapparella", "Tapparella", "cameretta", 50);
-        add(new MockDevice("cameretta-sensore", "Sensore temperatura", "cameretta", LOCATION_ID, "TemperatureSensor")
+        add(new MockDevice("cameretta-sensore", "Sensore temperatura", "cameretta", LOCATION_ID, "TempSensor")
                 .simulatedTemperature(21.0, 0.0)
                 .set(BATTERY, "battery", 81, "%"));
 

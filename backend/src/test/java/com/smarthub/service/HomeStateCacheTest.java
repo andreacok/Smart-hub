@@ -40,7 +40,7 @@ class HomeStateCacheTest {
         assertEquals("Casa Demo", cache.location().name());
         assertEquals(8, cache.rooms().size());
         Device lampadario = cache.device("salotto-lampadario").orElseThrow();
-        assertEquals(DeviceType.LIGHT, lampadario.type());
+        assertEquals(DeviceType.LIGHT, lampadario.deviceType());
         assertEquals(PowerState.ON, lampadario.state().power());
         assertEquals(75, lampadario.state().brightness());
         assertFalse(cache.device("corridoio-videocamera").orElseThrow().online());

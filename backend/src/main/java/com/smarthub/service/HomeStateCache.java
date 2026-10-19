@@ -184,7 +184,8 @@ public class HomeStateCache {
                         // aggiorna definizione (nome, stanza) mantenendo lo stato già noto
                         Device fresh = normalizer.normalize(d, null, health.getOrDefault(id, true), now());
                         return existing == null ? fresh : new Device(fresh.id(), fresh.name(), fresh.roomId(),
-                                fresh.type(), existing.online(), existing.state(), fresh.capabilities(), existing.updatedAt());
+                                fresh.smartThingsCategory(), fresh.deviceType(), existing.online(), existing.state(),
+                                fresh.capabilities(), existing.updatedAt());
                     });
                 }
                 rawDevices.keySet().retainAll(newOrder);

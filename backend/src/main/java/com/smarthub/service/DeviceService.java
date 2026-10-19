@@ -75,7 +75,7 @@ public class DeviceService {
         }
         StDevice raw = cache.rawDevice(id).orElseThrow(() -> notFound(id));
         DeviceCommand command = new DeviceCommand(request.command(), request.value());
-        List<StCommand> stCommands = translator.translate(raw, device.type(), command, device.state());
+        List<StCommand> stCommands = translator.translate(raw, device.deviceType(), command, device.state());
         log.info("Comando {} su '{}' ({})", command.type(), device.name(), id);
 
         api.executeCommands(id, stCommands);

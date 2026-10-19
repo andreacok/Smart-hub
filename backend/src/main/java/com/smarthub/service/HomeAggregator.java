@@ -6,7 +6,6 @@ import com.smarthub.dto.RoomSummaryDto;
 import com.smarthub.model.Capability;
 import com.smarthub.model.ContactState;
 import com.smarthub.model.Device;
-import com.smarthub.model.DeviceType;
 import com.smarthub.model.OpenState;
 import com.smarthub.model.Room;
 
@@ -29,13 +28,13 @@ public final class HomeAggregator {
     /** Un dispositivo è "attivo" se acceso (luci, prese, interruttori). */
     public static boolean isActive(Device d) {
         return d.online() && d.has(Capability.POWER) && d.isOn()
-                && (d.type() == DeviceType.LIGHT || d.type() == DeviceType.SWITCH);
+                && (d.deviceType().isLight() || d.deviceType().isSwitch());
     }
 
     public static RoomSummaryDto roomSummary(Room room, Collection<Device> devices, List<AlertDto> alerts) {
-        List<Device> lights = devices.stream().filter(d -> d.type() == DeviceType.LIGHT).toList();
+        List<Device> lights = devices.stream().filter(d -> d.deviceType().isLight()).toList();
         List<Device> shutters = devices.stream()
-                .filter(d -> d.type() == DeviceType.SHUTTER && d.state().position() != null).toList();
+                .filter(d -> d.deviceType().isShutter() && d.state().position() != null).toList();
         Integer shutterPosition = shutters.isEmpty() ? null
                 : (int) Math.round(shutters.stream().mapToInt(d -> d.state().position()).average().orElse(0));
         int roomAlerts = (int) alerts.stream().filter(a -> room.id().equals(a.roomId())).count();
@@ -60,7 +59,7 @@ public final class HomeAggregator {
     }
 
     public static HomeSummaryDto homeSummary(Collection<Device> devices, List<AlertDto> alerts) {
-        List<Device> lights = devices.stream().filter(d -> d.type() == DeviceType.LIGHT).toList();
+        List<Device> lights = devices.stream().filter(d -> d.deviceType().isLight()).toList();
         double power = devices.stream().map(d -> d.state().powerUsage()).filter(Objects::nonNull)
                 .mapToDouble(Double::doubleValue).sum();
         boolean hasPowerMeters = devices.stream().anyMatch(d -> d.has(Capability.POWER_METER));
@@ -72,7 +71,7 @@ public final class HomeAggregator {
                 lights.size(),
                 averageTemperature(devices),
                 averageHumidity(devices),
-                (int) devices.stream().filter(d -> d.type() == DeviceType.SHUTTER)
+                (int) devices.stream().filter(d -> d.deviceType().isShutter())
                         .filter(d -> d.state().openState() != OpenState.CLOSED && d.state().openState() != null)
                         .count(),
                 (int) devices.stream().filter(d -> d.state().contact() == ContactState.OPEN).count(),
@@ -104,15 +103,17 @@ public final class HomeAggregator {
     }
 
     /**
-     * Temperatura media della stanza: privilegia i sensori dedicati,
-     * altrimenti usa la temperatura misurata dal termostato.
+     * Temperatura media della stanza: usa i sensori dedicati (famiglia SENSOR),
+     * altrimenti la temperatura misurata dal termostato. Forni, frigoriferi e altri elettrodomestici
+     * che espongono una temperatura non sono la temperatura della stanza e vengono esclusi.
      */
     static Double averageTemperature(Collection<Device> devices) {
         List<Device> withTemp = devices.stream()
                 .filter(d -> d.online() && d.state().temperature() != null).toList();
-        List<Device> sensors = withTemp.stream().filter(d -> d.type() != DeviceType.THERMOSTAT).toList();
-        OptionalDouble avg = (sensors.isEmpty() ? withTemp : sensors).stream()
-                .mapToDouble(d -> d.state().temperature()).average();
+        List<Device> sensors = withTemp.stream().filter(d -> d.deviceType().isSensor()).toList();
+        List<Device> thermostats = withTemp.stream().filter(d -> d.deviceType().isThermostat()).toList();
+        List<Device> source = !sensors.isEmpty() ? sensors : thermostats;
+        OptionalDouble avg = source.stream().mapToDouble(d -> d.state().temperature()).average();
         return avg.isPresent() ? Math.round(avg.getAsDouble() * 10) / 10.0 : null;
     }
 

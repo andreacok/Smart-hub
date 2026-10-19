@@ -1,7 +1,153 @@
 // Tipi delle API REST del backend Smart Hub (modello normalizzato, indipendente da SmartThings).
 // I campi opzionali vengono omessi dal backend quando non applicabili.
 
-export type DeviceType = 'LIGHT' | 'SWITCH' | 'SHUTTER' | 'THERMOSTAT' | 'SENSOR' | 'CAMERA' | 'OTHER';
+/** Tipo normalizzato: una costante per ogni categoria SmartThings (vedi DeviceType nel backend). */
+export type DeviceType =
+  | 'AIR_CONDITIONER' |
+  'AIR_PURIFIER' |
+  'AIR_QUALITY_DETECTOR' |
+  'AIR_PURIFY_HUMIDIFIER' |
+  'BATHROOM_HEATER' |
+  'BATTERY' |
+  'BED' |
+  'BIDET' |
+  'BLIND' |
+  'BLOOD_GLUCOSE_MONITOR' |
+  'BLOOD_PRESSURE_MONITOR' |
+  'BLUETOOTH_TRACKER' |
+  'BRIDGES' |
+  'BUTTON' |
+  'CAMERA' |
+  'CAT_TOILET' |
+  'CHARGER' |
+  'CHLORINE_SENSOR' |
+  'CLOTHING_CARE_MACHINE' |
+  'COFFEE_MAKER' |
+  'CONTACT_SENSOR' |
+  'COOKTOP' |
+  'CUBE_REFRIGERATOR' |
+  'CURB_POWER_METER' |
+  'CYCLING_SENSOR' |
+  'DEHUMIDIFIER' |
+  'DELIVERY_ROBOT' |
+  'DISHWASHER' |
+  'DOOR' |
+  'DOOR_BELL' |
+  'DRYER' |
+  'EARBUDS' |
+  'ELECTRIC_VEHICLE_CHARGER' |
+  'ELEVATOR' |
+  'ELLIPTICAL' |
+  'ENVIRONMENT_SENSOR' |
+  'FAN' |
+  'FAUCET' |
+  'FEEDER' |
+  'FITNESS_MAT' |
+  'FLASHLIGHT' |
+  'FLOW_SENSOR' |
+  'GARAGE_DOOR' |
+  'GAS_METER' |
+  'GAS_VALVE' |
+  'GENERIC_SENSOR' |
+  'HEALTH_TRACKER' |
+  'HEAT_PUMP' |
+  'HEATED_MATTRESS_PAD' |
+  'HEATING_COOLING_MAT' |
+  'HOME_THEATER' |
+  'HUB' |
+  'HUMIDIFIER' |
+  'HUMIDITY_SENSOR' |
+  'INDOOR_CYCLE' |
+  'IR_REMOTE' |
+  'IRRIGATION' |
+  'KIMCHI_REFRIGERATOR' |
+  'KITCHEN_HOOD' |
+  'LEAK_SENSOR' |
+  'LIGHT' |
+  'LIGHT_SENSOR' |
+  'MEDICAL_THERMOMETER' |
+  'MICRO_FIBER_FILTER' |
+  'MICROWAVE' |
+  'MOBILE' |
+  'MOBILE_PRESENCE' |
+  'MOTION_SENSOR' |
+  'MULTI_FUNCTIONAL_SENSOR' |
+  'MUSIC_SYSTEM' |
+  'NETWORK_AUDIO' |
+  'NETWORKING' |
+  'OTHER' |
+  'OVEN' |
+  'PANIC_BUTTON' |
+  'PET_WATER_DISPENSER' |
+  'PH_SENSOR' |
+  'PILLOW' |
+  'PLANT_GROWER' |
+  'POWER_MEASUREMENT_SENSOR' |
+  'PRESENCE_SENSOR' |
+  'PRINTER' |
+  'PRINTER_MULTI_FUNCTION' |
+  'PROJECTOR' |
+  'PUMP' |
+  'RAIN_SENSOR' |
+  'RANGE' |
+  'RECEIVER' |
+  'REMOTE_CONTROLLER' |
+  'REFRIGERATOR' |
+  'RICE_COOKER' |
+  'ROBOT_CLEANER' |
+  'ROWER' |
+  'SAFE' |
+  'SCALE_TO_MEASURE_MASS_OF_HUMAN_BODY' |
+  'SCANNER' |
+  'SECURITY_PANEL' |
+  'SET_TOP' |
+  'SHADE' |
+  'SHOES' |
+  'SHOES_CARE_MACHINE' |
+  'SHOWER' |
+  'SIREN' |
+  'SMART_LOCK' |
+  'SMART_MONITOR' |
+  'SMART_PLUG' |
+  'SMOKE_DETECTOR' |
+  'SOLAR_PANEL' |
+  'SOUND_BAR' |
+  'SOUND_MACHINE' |
+  'SOUND_SENSOR' |
+  'SPEAKER' |
+  'STAIR_CLIMBER' |
+  'STEP_MACHINE' |
+  'STICK_VACUUM_CLEANER' |
+  'STORAGE' |
+  'STOVE' |
+  'SWITCH' |
+  'TAG_READER' |
+  'TELEVISION' |
+  'TEMP_HUMIDITY_SENSOR' |
+  'TEMP_SENSOR' |
+  'THERMOSTAT' |
+  'TOILET' |
+  'TOWEL_RACK' |
+  'TRACKER' |
+  'TREADMILL' |
+  'UPNP_MEDIA_RENDERER' |
+  'VENT' |
+  'VISION_SENSOR' |
+  'VOICE_ASSISTANCE' |
+  'WASHER' |
+  'WATER_FREEZE_DETECTOR' |
+  'WATER_HEATER' |
+  'WATER_PURIFIER' |
+  'WATER_VALVE' |
+  'WEATHER_STATION' |
+  'WIFI_ROUTER' |
+  'WINDOW' |
+  'WINDOW_OPENER' |
+  'WINE_CELLAR' |
+  'ZONE_SENSOR' |
+  'UNKNOWN';
+
+export type DeviceFamily = 'ACCESS' | 'AIR_QUALITY' | 'AUDIO' | 'CLEANING' | 'CLIMATE' | 'COOKING_APPLIANCE' | 'COVERING' | 'FITNESS' | 'GENERIC' | 'LAUNDRY' | 'LIGHTING' | 'MEDIA' | 'MOBILE_TRACKING' | 'NETWORK' | 'PERSONAL_HEALTH' | 'PET' | 'POWER' | 'REFRIGERATION' | 'REMOTE_CONTROL' | 'SECURITY' | 'SENSOR' | 'WATER';
 
 export type Capability =
   | 'POWER'
@@ -57,7 +203,10 @@ export interface Device {
   name: string;
   roomId: string;
   roomName?: string;
-  type: DeviceType;
+  /** Categoria originale SmartThings, preservata così com'è. Assente se SmartThings non la fornisce. */
+  smartThingsCategory?: string | null;
+  deviceType: DeviceType;
+  deviceFamily: DeviceFamily;
   online: boolean;
   state: DeviceState;
   capabilities: Capability[];
