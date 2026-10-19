@@ -1,0 +1,29 @@
+# Avvio completo:  docker compose up --build
+# Dashboard:       http://localhost:8088  (porta configurabile con SMARTHUB_PORT)
+# Configurazione:  copia .env.example in .env (di default parte in modalità mock)
+
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SMARTTHINGS_MODE: ${SMARTTHINGS_MODE:-mock}
+    volumes:
+      # token OAuth SmartThings (il refresh token ruota: deve sopravvivere ai riavvii)
+      - smarthub-data:/app/data
+    expose:
+      - "8080"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${SMARTHUB_PORT:-8088}:80"
+
+volumes:
+  smarthub-data:
