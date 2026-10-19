@@ -98,14 +98,14 @@ class RoomImageApiTest {
     void unknownRoomIsNotFound() throws Exception {
         mvc.perform(multipart("/api/rooms/stanza-inesistente/image").file(jpeg("a.jpg", 100, 100)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+                .andExpect(jsonPath("$.code").value("SMART_HUB_NOT_FOUND"));
     }
 
     @Test
     void invalidRoomIdIsBadRequest() throws Exception {
         mvc.perform(multipart("/api/rooms/bad%20id/image").file(jpeg("a.jpg", 100, 100)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("BAD_REQUEST"));
+                .andExpect(jsonPath("$.code").value("SMART_HUB_VALIDATION_ERROR"));
     }
 
     @Test

@@ -321,11 +321,23 @@ export interface SystemStatus {
   lastErrorAt?: string;
 }
 
+/** Da dove nasce un errore: SmartThings, Smart Hub, la rete o non classificato. */
+export type ErrorSource = 'SMARTTHINGS' | 'SMART_HUB' | 'NETWORK' | 'UNKNOWN';
+
+/** Corpo di errore delle API REST. Il frontend decide il messaggio dal {@code code}, non dallo status HTTP. */
 export interface ApiErrorBody {
   status: number;
   code: string;
+  source?: ErrorSource;
   message: string;
+  detail?: string;
+  retryable?: boolean;
+  deviceId?: string;
+  retryAfterSeconds?: number;
+  upstreamRequestId?: string;
+  correlationId?: string;
   path?: string;
+  timestamp?: string;
 }
 
 /** Risposta di upload/ripristino della fotografia di una stanza. */

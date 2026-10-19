@@ -3,6 +3,8 @@ package com.smarthub.smartthings.mock;
 import com.smarthub.config.SmartThingsProperties;
 import com.smarthub.smartthings.api.SmartThingsApi;
 import com.smarthub.smartthings.api.SmartThingsException;
+import com.smarthub.smartthings.error.SmartThingsErrorMapper;
+import com.smarthub.smartthings.error.SmartThingsOperation;
 import com.smarthub.smartthings.api.StCommand;
 import com.smarthub.smartthings.api.StDevice;
 import com.smarthub.smartthings.api.StDeviceStatus;
@@ -94,10 +96,12 @@ public class MockSmartThingsApi implements SmartThingsApi {
         synchronized (this) {
             MockDevice device = device(deviceId);
             if (!device.online()) {
-                throw new SmartThingsException("Il dispositivo è offline", 409, null);
+                throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.COMMAND, deviceId, 409,
+                        SmartThingsErrorMapper.simulatedBody("Il dispositivo è offline"), null));
             }
             if (commandFailureRate > 0 && ThreadLocalRandom.current().nextDouble() < commandFailureRate) {
-                throw new SmartThingsException("Errore simulato durante l'invio del comando", 503, null);
+                throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.COMMAND, deviceId, 503,
+                        SmartThingsErrorMapper.simulatedBody("Errore simulato durante l'invio del comando"), null));
             }
             commands.forEach(c -> device.apply(c, clock.instant()));
         }
@@ -114,7 +118,8 @@ public class MockSmartThingsApi implements SmartThingsApi {
         simulateLatency();
         MockScene scene = scenes.get(sceneId);
         if (scene == null) {
-            throw new SmartThingsException("Scena non trovata: " + sceneId, 404, null);
+            throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.SCENE, null, 404,
+                    SmartThingsErrorMapper.simulatedBody("Scena non trovata: " + sceneId), null));
         }
         synchronized (this) {
             for (MockDevice device : devices.values()) {
@@ -128,7 +133,8 @@ public class MockSmartThingsApi implements SmartThingsApi {
     private MockDevice device(String deviceId) {
         MockDevice d = devices.get(deviceId);
         if (d == null) {
-            throw new SmartThingsException("Dispositivo non trovato: " + deviceId, 404, null);
+            throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.READ, deviceId, 404,
+                    SmartThingsErrorMapper.simulatedBody("Dispositivo non trovato: " + deviceId), null));
         }
         return d;
     }

@@ -1,6 +1,8 @@
 package com.smarthub.smartthings.mock;
 
 import com.smarthub.smartthings.api.SmartThingsException;
+import com.smarthub.smartthings.error.SmartThingsErrorMapper;
+import com.smarthub.smartthings.error.SmartThingsOperation;
 import com.smarthub.smartthings.api.StAttribute;
 import com.smarthub.smartthings.api.StCapabilityRef;
 import com.smarthub.smartthings.api.StCategory;
@@ -149,8 +151,8 @@ class MockDevice {
                     set(THERMOSTAT_HEATING_SETPOINT, "heatingSetpoint", toDouble(args.get(0)), "C");
             case THERMOSTAT_MODE + ".setThermostatMode" ->
                     set(THERMOSTAT_MODE, "thermostatMode", String.valueOf(args.get(0)));
-            default -> throw new SmartThingsException(
-                    "Comando non supportato dal dispositivo simulato: " + key, 422, null);
+            default -> throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.COMMAND, id, 422,
+                    SmartThingsErrorMapper.simulatedBody("Comando non supportato dal dispositivo simulato: " + key), null));
         }
         tick(now);
     }
@@ -238,7 +240,8 @@ class MockDevice {
 
     private static int intArg(List<Object> args) {
         if (args.isEmpty()) {
-            throw new SmartThingsException("Argomento mancante", 422, null);
+            throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.COMMAND, null, 422,
+                    SmartThingsErrorMapper.simulatedBody("Argomento mancante"), null));
         }
         return (int) Math.round(toDouble(args.get(0)));
     }
@@ -250,7 +253,8 @@ class MockDevice {
         try {
             return Double.parseDouble(String.valueOf(o));
         } catch (NumberFormatException e) {
-            throw new SmartThingsException("Argomento non numerico: " + o, 422, e);
+            throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.COMMAND, null, 422,
+                    SmartThingsErrorMapper.simulatedBody("Argomento non numerico"), null), e);
         }
     }
 

@@ -1,16 +1,17 @@
 import { ErrorState, LoadingState } from '../components/common/PageState';
 import { useSystemStatus } from '../hooks/useSystemStatus';
+import { errorMessage } from '../lib/apiErrors';
 import { relativeTime } from '../lib/format';
 import { ThemeToggle } from '../components/layout/ThemeToggle';
 import styles from './CollectionPage.module.css';
 
 /** Altro: stato del sistema e della connessione con SmartThings. */
 export function MorePage() {
-  const { data: status, isPending, isError } = useSystemStatus();
+  const { data: status, error, isPending, isError } = useSystemStatus();
 
   if (isPending) return <LoadingState label="Caricamento dello stato" />;
   if (isError && !status) {
-    return <ErrorState title="Impossibile leggere lo stato" message="Il server Smart Hub non risponde." />;
+    return <ErrorState title="Impossibile leggere lo stato" message={errorMessage(error)} />;
   }
 
   const modeLabel = status.mode === 'mock' ? 'Demo' : 'SmartThings';

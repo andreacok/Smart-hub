@@ -7,6 +7,7 @@ import { RoomHeader } from '../components/room/RoomHeader';
 import { useRoomAllOff } from '../hooks/useActions';
 import { useRoom } from '../hooks/useRoom';
 import { groupDevices } from '../lib/grouping';
+import { errorMessage } from '../lib/apiErrors';
 import styles from './RoomPage.module.css';
 
 export function RoomPage() {
@@ -21,7 +22,7 @@ export function RoomPage() {
     return (
       <ErrorState
         title={notFound ? 'Stanza non trovata' : 'Impossibile caricare la stanza'}
-        message={notFound ? 'Potrebbe essere stata rinominata o eliminata in SmartThings.' : error.message}
+        message={notFound ? 'Potrebbe essere stata rinominata o eliminata in SmartThings.' : errorMessage(error)}
         action={
           notFound ? (
             <Link to="/" className={styles.link}>Torna alla casa</Link>

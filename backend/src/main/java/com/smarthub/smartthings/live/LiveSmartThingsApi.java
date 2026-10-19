@@ -11,6 +11,9 @@ import com.smarthub.smartthings.api.StLocation;
 import com.smarthub.smartthings.api.StPage;
 import com.smarthub.smartthings.api.StRoom;
 import com.smarthub.smartthings.api.StScene;
+import com.smarthub.smartthings.error.SmartThingsError;
+import com.smarthub.smartthings.error.SmartThingsErrorMapper;
+import com.smarthub.smartthings.error.SmartThingsOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -83,14 +86,14 @@ public class LiveSmartThingsApi implements SmartThingsApi {
 
     @Override
     public StDeviceStatus getDeviceStatus(String deviceId) {
-        return read("/devices/" + deviceId + "/status",
+        return read(deviceId, "/devices/" + deviceId + "/status",
                 client -> client.get().uri("/devices/{id}/status", deviceId)
                         .retrieve().bodyToMono(StDeviceStatus.class));
     }
 
     @Override
     public StHealth getDeviceHealth(String deviceId) {
-        return read("/devices/" + deviceId + "/health",
+        return read(deviceId, "/devices/" + deviceId + "/health",
                 client -> client.get().uri("/devices/{id}/health", deviceId)
                         .retrieve().bodyToMono(StHealth.class));
     }
@@ -99,7 +102,7 @@ public class LiveSmartThingsApi implements SmartThingsApi {
     public void executeCommands(String deviceId, List<StCommand> commands) {
         log.debug("Comandi verso {}: {}", deviceId, commands);
         // I comandi NON vengono ripetuti automaticamente: un retry potrebbe eseguire due volte un'azione.
-        execute("POST /devices/" + deviceId + "/commands", false,
+        execute(SmartThingsOperation.COMMAND, deviceId, "POST /devices/" + deviceId + "/commands", false,
                 client -> client.post().uri("/devices/{id}/commands", deviceId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(Map.of("commands", commands))
@@ -113,7 +116,7 @@ public class LiveSmartThingsApi implements SmartThingsApi {
 
     @Override
     public void executeScene(String sceneId) {
-        execute("POST /scenes/" + sceneId + "/execute", false,
+        execute(SmartThingsOperation.SCENE, null, "POST /scenes/" + sceneId + "/execute", false,
                 client -> client.post().uri("/scenes/{id}/execute", sceneId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(Map.of())
@@ -128,7 +131,7 @@ public class LiveSmartThingsApi implements SmartThingsApi {
         int guard = 0;
         while (next != null && guard++ < 50) {
             final String target = next;
-            StPage<T> page = read(target, client -> {
+            StPage<T> page = read(null, target, client -> {
                 if (target.startsWith("http")) {
                     return client.get().uri(URI.create(target)).retrieve().bodyToMono(type);
                 }
@@ -145,11 +148,12 @@ public class LiveSmartThingsApi implements SmartThingsApi {
         return result;
     }
 
-    private <T> T read(String description, Function<WebClient, Mono<T>> call) {
-        return execute("GET " + description, true, call);
+    private <T> T read(String deviceId, String description, Function<WebClient, Mono<T>> call) {
+        return execute(SmartThingsOperation.READ, deviceId, "GET " + description, true, call);
     }
 
-    private <T> T execute(String description, boolean retryable, Function<WebClient, Mono<T>> call) {
+    private <T> T execute(SmartThingsOperation operation, String deviceId, String description, boolean retryable,
+                          Function<WebClient, Mono<T>> call) {
         try {
             return doExecute(retryable, call);
         } catch (WebClientResponseException.Unauthorized e) {
@@ -158,10 +162,10 @@ public class LiveSmartThingsApi implements SmartThingsApi {
             try {
                 return doExecute(retryable, call);
             } catch (RuntimeException retryError) {
-                throw translate(description, retryError);
+                throw translate(operation, deviceId, description, retryError);
             }
         } catch (RuntimeException e) {
-            throw translate(description, e);
+            throw translate(operation, deviceId, description, e);
         }
     }
 
@@ -187,29 +191,16 @@ public class LiveSmartThingsApi implements SmartThingsApi {
         return t instanceof TimeoutException || t instanceof WebClientRequestException;
     }
 
-    private static SmartThingsException translate(String description, Throwable e) {
+    /** Converte qualsiasi errore di comunicazione nell'errore classificato dal mapper. Nessun body grezzo viene loggato. */
+    private SmartThingsException translate(SmartThingsOperation operation, String deviceId, String description,
+                                           Throwable e) {
         if (e instanceof SmartThingsException st) {
             return st;
         }
         Throwable cause = unwrap(e);
-        if (cause instanceof WebClientResponseException r) {
-            int status = r.getStatusCode().value();
-            String message = switch (status) {
-                case 401 -> "Token SmartThings non valido o scaduto";
-                case 403 -> "Permessi insufficienti sul token SmartThings (verifica gli scope)";
-                case 404 -> "Risorsa SmartThings non trovata";
-                case 422 -> "Comando rifiutato dal dispositivo";
-                case 429 -> "Troppe richieste verso SmartThings (rate limit)";
-                default -> "SmartThings ha risposto con errore " + status;
-            };
-            log.warn("{} -> {} {}", description, status, r.getResponseBodyAsString());
-            return new SmartThingsException(message, status, r);
-        }
-        if (cause instanceof TimeoutException) {
-            return new SmartThingsException("Timeout nella comunicazione con SmartThings", 504, cause);
-        }
-        log.warn("{} -> errore di comunicazione: {}", description, cause.toString());
-        return new SmartThingsException("SmartThings non raggiungibile: " + cause.getMessage(), 0, cause);
+        log.debug("Errore SmartThings su {}: {}", description, cause.getClass().getSimpleName());
+        SmartThingsError error = SmartThingsErrorMapper.fromException(operation, deviceId, cause);
+        return new SmartThingsException(SmartThingsErrorMapper.redact(error, tokenProvider.secrets()), cause);
     }
 
     private static Throwable unwrap(Throwable e) {

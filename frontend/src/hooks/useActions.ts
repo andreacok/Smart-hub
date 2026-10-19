@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/endpoints';
 import type { ActionResult, Scene } from '../api/types';
 import { useToast } from '../components/feedback/toastContext';
+import { actionErrorMessage } from '../lib/apiErrors';
 
 function reportResult(result: ActionResult, toast: ReturnType<typeof useToast>, emptyMessage: string) {
   if (result.failed > 0) {
@@ -18,7 +19,7 @@ export function useExecuteScene() {
   return useMutation<void, Error, Scene>({
     mutationFn: (scene) => api.executeScene(scene.id),
     onSuccess: (_data, scene) => toast.show(`Scena "${scene.name}" avviata`, 'success'),
-    onError: (error, scene) => toast.show(`${scene.name}: ${error.message}`, 'error'),
+    onError: (error, scene) => toast.show(actionErrorMessage(`avviare la scena "${scene.name}"`, error), 'error'),
     onSettled: () => queryClient.invalidateQueries(),
   });
 }
@@ -30,7 +31,7 @@ export function useRoomAllOff(roomId: string) {
   return useMutation<ActionResult, Error>({
     mutationFn: () => api.roomAllOff(roomId),
     onSuccess: (result) => reportResult(result, toast, 'In questa stanza è già tutto spento'),
-    onError: (error) => toast.show(error.message, 'error'),
+    onError: (error) => toast.show(actionErrorMessage('spegnere le luci di questa stanza', error), 'error'),
     onSettled: () => queryClient.invalidateQueries(),
   });
 }
@@ -42,7 +43,7 @@ export function useHomeLightsOff() {
   return useMutation<ActionResult, Error>({
     mutationFn: () => api.homeLightsOff(),
     onSuccess: (result) => reportResult(result, toast, 'Le luci sono già tutte spente'),
-    onError: (error) => toast.show(error.message, 'error'),
+    onError: (error) => toast.show(actionErrorMessage('spegnere le luci della casa', error), 'error'),
     onSettled: () => queryClient.invalidateQueries(),
   });
 }

@@ -1,5 +1,5 @@
 import { LightbulbOff } from 'lucide-react';
-import { ApiError } from '../api/client';
+import { errorMessage, isUnreachable } from '../lib/apiErrors';
 import { QuickAction } from '../components/common/QuickAction';
 import { EmptyState, ErrorState, LoadingState } from '../components/common/PageState';
 import { AlertList } from '../components/home/AlertList';
@@ -20,14 +20,14 @@ export function HomePage() {
   if (isPending) return <LoadingState />;
 
   if (isError && !home) {
-    const unreachable = error instanceof ApiError && (error.status === 0 || error.status >= 500);
+    const unreachable = isUnreachable(error);
     return (
       <ErrorState
-        title={unreachable ? 'Il server Smart Hub non risponde' : 'Impossibile caricare la casa'}
+        title={unreachable ? 'Smart Hub non risponde' : 'Impossibile caricare la casa'}
         message={
           unreachable
-            ? 'Verifica che il backend sia avviato (porta 8080) e raggiungibile da questo dispositivo.'
-            : error.message
+            ? 'Verifica che il backend sia avviato e raggiungibile da questo dispositivo.'
+            : errorMessage(error)
         }
         action={<QuickAction label="Riprova" onClick={() => void refetch()} />}
       />

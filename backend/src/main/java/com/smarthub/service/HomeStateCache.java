@@ -8,6 +8,9 @@ import com.smarthub.model.Room;
 import com.smarthub.model.Scene;
 import com.smarthub.smartthings.api.SmartThingsApi;
 import com.smarthub.smartthings.api.SmartThingsException;
+import com.smarthub.error.ApiErrorCode;
+import com.smarthub.smartthings.error.SmartThingsErrorMapper;
+import com.smarthub.smartthings.error.SmartThingsOperation;
 import com.smarthub.smartthings.api.StDevice;
 import com.smarthub.smartthings.api.StDeviceStatus;
 import com.smarthub.smartthings.api.StLocation;
@@ -201,7 +204,8 @@ public class HomeStateCache {
                 log.info("Struttura caricata: location '{}', {} stanze, {} dispositivi, {} scene",
                         selected.name(), newRooms.size(), newOrder.size(), newScenes.size());
             } catch (RuntimeException e) {
-                recordError(e);
+                recordError(e instanceof SmartThingsException st ? st.getMessage()
+                        : "Errore interno durante l'aggiornamento da SmartThings");
                 throw e;
             }
         }
@@ -230,7 +234,7 @@ public class HomeStateCache {
                 lastHealthRefresh = now();
             }
             if (!ids.isEmpty() && failures.get() == ids.size()) {
-                recordError(new SmartThingsException("Impossibile aggiornare lo stato dei dispositivi"));
+                recordError("Impossibile aggiornare lo stato dei dispositivi");
             } else {
                 if (failures.get() > 0) {
                     log.warn("Refresh stato: {} dispositivi su {} non aggiornati", failures.get(), ids.size());
@@ -282,13 +286,12 @@ public class HomeStateCache {
 
     private StLocation selectLocation(List<StLocation> locations) {
         if (locations.isEmpty()) {
-            throw new SmartThingsException("Nessuna location trovata sull'account SmartThings", 404, null);
+            throw locationError("Nessuna location trovata sull'account SmartThings");
         }
         String configured = properties.getLocationId();
         if (configured != null && !configured.isBlank()) {
             return locations.stream().filter(l -> configured.equals(l.locationId())).findFirst()
-                    .orElseThrow(() -> new SmartThingsException(
-                            "SMARTTHINGS_LOCATION_ID non trovato tra le location dell'account", 404, null));
+                    .orElseThrow(() -> locationError("SMARTTHINGS_LOCATION_ID non trovato tra le location dell'account"));
         }
         if (locations.size() > 1) {
             log.info("Trovate {} location, uso '{}'. Imposta SMARTTHINGS_LOCATION_ID per sceglierne un'altra.",
@@ -309,10 +312,15 @@ public class HomeStateCache {
         }
     }
 
-    private void recordError(RuntimeException e) {
-        lastError = e.getMessage();
+    private void recordError(String message) {
+        lastError = message;
         lastErrorAt = now();
-        log.warn("Errore SmartThings: {}", e.getMessage());
+        log.warn("Errore SmartThings: {}", message);
+    }
+
+    private static SmartThingsException locationError(String message) {
+        return new SmartThingsException(SmartThingsErrorMapper.custom(SmartThingsOperation.READ,
+                ApiErrorCode.SMARTTHINGS_ERROR, message, message));
     }
 
     private void clearError() {

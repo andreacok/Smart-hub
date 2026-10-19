@@ -65,18 +65,22 @@ class ApiIntegrationTest {
     void errorsAreMappedToJson() throws Exception {
         mvc.perform(get("/api/devices/does-not-exist"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("NOT_FOUND"));
+                .andExpect(jsonPath("$.code").value("SMART_HUB_NOT_FOUND"));
 
         mvc.perform(post("/api/devices/cucina-presa-caffe/commands")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"command\":\"SET_BRIGHTNESS\",\"value\":40}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("SMARTTHINGS_COMMAND_NOT_SUPPORTED"))
+                .andExpect(jsonPath("$.source").value("SMARTTHINGS"));
 
         mvc.perform(post("/api/devices/corridoio-videocamera/commands")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"command\":\"TURN_OFF\"}"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("DEVICE_OFFLINE"));
+                .andExpect(status().isFailedDependency())
+                .andExpect(jsonPath("$.code").value("SMARTTHINGS_DEVICE_OFFLINE"))
+                .andExpect(jsonPath("$.retryable").value(true))
+                .andExpect(jsonPath("$.deviceId").value("corridoio-videocamera"));
     }
 
     @Test
