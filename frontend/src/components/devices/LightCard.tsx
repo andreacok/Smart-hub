@@ -45,7 +45,7 @@ export function LightCard({ device }: { device: Device }) {
           value={brightness}
           min={1}
           onChange={setBrightness}
-          fill="var(--accent)"
+          fill="var(--lamp)"
           valueText={`${brightness}%`}
         />
       )}
@@ -59,7 +59,7 @@ export function LightCard({ device }: { device: Device }) {
             max={6500}
             step={100}
             onChange={setKelvin}
-            fill="var(--accent)"
+            fill="var(--lamp)"
             valueText={`${kelvin} K`}
           />
           <span className={styles.caption}>Fredda</span>

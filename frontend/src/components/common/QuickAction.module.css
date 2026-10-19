@@ -28,3 +28,17 @@
   display: inline-flex;
   color: var(--text-muted);
 }
+
+/* Rosso riservato alle azioni globali critiche. */
+.danger {
+  border-color: rgb(239 106 106 / 0.35);
+  background: color-mix(in srgb, var(--alert) 14%, var(--surface));
+}
+
+.danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--alert) 22%, var(--surface));
+}
+
+.danger .icon {
+  color: var(--alert);
+}

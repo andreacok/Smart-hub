@@ -19,7 +19,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--lamp);
+  background: var(--accent);
   animation: pulse 1.4s ease-in-out infinite;
 }
 

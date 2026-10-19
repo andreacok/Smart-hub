@@ -2,6 +2,7 @@ export const queryKeys = {
   home: ['home'] as const,
   room: (roomId: string) => ['room', roomId] as const,
   rooms: ['rooms'] as const,
+  devices: ['devices'] as const,
   system: ['system'] as const,
 };
 

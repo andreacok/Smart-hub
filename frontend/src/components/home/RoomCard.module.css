@@ -1,54 +1,102 @@
+/* Card stanza fotografica: la foto riempie la card, lo scrim tiene leggibile il testo in basso. */
 .card {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  min-height: 200px;
-  padding: 20px;
+  justify-content: flex-end;
+  height: 260px;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius-l);
-  background: var(--surface);
-  transition: background-color 150ms ease, border-color 150ms ease, transform 80ms ease;
+  background: var(--surface-sunken);
+  color: var(--text);
+  transition: border-color 150ms ease, transform 80ms ease;
 }
 
 .card:hover {
-  background: var(--surface-raised);
+  border-color: rgb(255 255 255 / 0.18);
 }
 
 .card:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 
-/* Luce accesa: un accent tenue sul bordo, non un colore pieno. */
+.photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos-desktop, center);
+  transition: transform 400ms ease;
+}
+
+.card:hover .photo {
+  transform: scale(1.02);
+}
+
+/* Scrim: forte in basso per il testo, leggero in alto per non spegnere la foto. */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgb(11 13 15 / 0.94) 0%, rgb(11 13 15 / 0.72) 48%, rgb(11 13 15 / 0.2) 100%);
+  pointer-events: none;
+}
+
+/* Luce accesa: un bordo ambra sottile e un velo caldo in basso, non un colore pieno. */
 .lit {
-  border-color: rgb(108 168 255 / 0.35);
-  background: linear-gradient(180deg, var(--lamp-tint), transparent 70%), var(--surface);
+  border-color: rgb(245 178 92 / 0.32);
+}
+
+.lit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(90% 60% at 20% 100%, rgb(245 178 92 / 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
 .name {
-  color: var(--text-muted);
-  font-size: var(--text-xs);
+  font-size: var(--text-l);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.5);
 }
 
 .temp {
-  margin: var(--space-2) 0;
-  font-size: var(--text-3xl);
+  font-size: var(--text-xl);
   font-weight: 500;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
 .details {
   list-style: none;
-  margin: auto 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   font-size: var(--text-s);
   color: var(--text-muted);
 }
@@ -57,16 +105,34 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+@media (max-width: 1023px) {
+  .photo {
+    object-position: var(--pos-tablet, center);
+  }
 }
 
 @media (max-width: 760px) {
   .card {
-    min-height: 168px;
-    padding: var(--space-4);
+    height: 200px;
     border-radius: var(--radius-m);
   }
 
+  .photo {
+    object-position: var(--pos-mobile, center);
+  }
+
+  .body {
+    padding: var(--space-4);
+  }
+
+  .name {
+    font-size: var(--text-m);
+  }
+
   .temp {
-    font-size: var(--text-3xl);
+    font-size: var(--text-l);
   }
 }

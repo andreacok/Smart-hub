@@ -7,7 +7,10 @@ import { Slider } from '../common/Slider';
 import { DeviceCard } from './DeviceCard';
 import styles from './controls.module.css';
 
-/** Tapparella: finestrella che mostra quanto è abbassata, comandi apri/stop/chiudi e posizione. */
+/**
+ * Tapparella: la finestra mostra quanto è abbassata la tapparella (la parte coperta scende con la posizione),
+ * il valore in grande, i comandi apri/stop/chiudi e lo slider di precisione.
+ */
 export function ShutterCard({ device }: { device: Device }) {
   const { mutate } = useDeviceCommand();
   const s = device.state;
@@ -19,27 +22,31 @@ export function ShutterCard({ device }: { device: Device }) {
   const moving = s.openState === 'OPENING' || s.openState === 'CLOSING';
 
   return (
-    <DeviceCard
-      device={device}
-      status={shutterLabel(s.openState, s.position)}
-      aside={hasPosition ? <ShutterWindow position={position} /> : undefined}
-    >
+    <DeviceCard device={device} status={shutterLabel(s.openState, s.position)}>
+      {hasPosition && (
+        <div className={styles.shutterWindow} aria-hidden="true">
+          <div className={styles.blind} style={{ height: `${100 - position}%` }} />
+        </div>
+      )}
       {hasPosition && (
         <p className={styles.bigValue} aria-hidden="true">
           {Math.round(position)}%
         </p>
       )}
-      <div className={styles.segmented} role="group" aria-label={`Comandi ${device.name}`}>
+      <div className={styles.shutterCommands} role="group" aria-label={`Comandi ${device.name}`}>
         <button type="button" onClick={() => mutate({ device, command: { command: 'OPEN' } })}>
-          <ChevronUp size={20} aria-hidden="true" /> Apri
+          <span className={styles.commandIcon}><ChevronUp size={22} aria-hidden="true" /></span>
+          <span>Apri</span>
         </button>
         {caps.includes('STOP') && (
           <button type="button" onClick={() => mutate({ device, command: { command: 'STOP' } })} data-emphasis={moving}>
-            <Pause size={18} aria-hidden="true" /> Stop
+            <span className={styles.commandIcon}><Pause size={20} aria-hidden="true" /></span>
+            <span>Stop</span>
           </button>
         )}
         <button type="button" onClick={() => mutate({ device, command: { command: 'CLOSE' } })}>
-          <ChevronDown size={20} aria-hidden="true" /> Chiudi
+          <span className={styles.commandIcon}><ChevronDown size={22} aria-hidden="true" /></span>
+          <span>Chiudi</span>
         </button>
       </div>
       {hasPosition && (
@@ -52,15 +59,5 @@ export function ShutterCard({ device }: { device: Device }) {
         />
       )}
     </DeviceCard>
-  );
-}
-
-/** Rappresentazione della finestra: la parte scura scende man mano che la tapparella si chiude. */
-function ShutterWindow({ position }: { position: number }) {
-  const closed = 100 - Math.max(0, Math.min(100, position));
-  return (
-    <span className={styles.window} aria-hidden="true">
-      <span className={styles.blind} style={{ height: `${closed}%` }} />
-    </span>
   );
 }

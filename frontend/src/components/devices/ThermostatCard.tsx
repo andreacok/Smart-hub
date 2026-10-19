@@ -36,12 +36,11 @@ export function ThermostatCard({ device }: { device: Device }) {
   return (
     <DeviceCard
       device={device}
-      wide
       status={device.online ? '' : undefined}
       aside={opBadge}
     >
-      <p className={styles.bigValue} aria-label={`Temperatura attuale ${formatTemperature(s.temperature, s.temperatureUnit)}`}>
-        {formatTemperature(s.temperature, s.temperatureUnit)}
+      <p className={styles.current} aria-label={`Temperatura attuale ${formatTemperature(s.temperature, s.temperatureUnit)}`}>
+        Ora {formatTemperature(s.temperature, s.temperatureUnit)}
       </p>
       <div className={styles.thermostat}>
         <button

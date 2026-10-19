@@ -78,6 +78,11 @@
     font-size: var(--text-xl);
   }
 
+  /* Sul telefono la barra deve stare su una riga: il badge demo è ridondante. */
+  .demo {
+    display: none;
+  }
+
   .time,
   .temperature {
     font-size: var(--text-l);

@@ -1,3 +1,4 @@
+import { Lightbulb, TriangleAlert } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useHome } from '../../hooks/useHome';
 import styles from './SideNavigation.module.css';
@@ -31,12 +32,16 @@ export function SideNavigation() {
               <span className={styles.label}>{room.name}</span>
               {room.lightsOn > 0 && (
                 <span className={styles.lit} title={`${room.lightsOn} luci accese`}>
-                  <span className="visually-hidden">{room.lightsOn} luci accese</span>
+                  <Lightbulb size={14} aria-hidden="true" />
+                  {room.lightsOn}
+                  <span className="visually-hidden"> luci accese</span>
                 </span>
               )}
-              {room.alertCount > 0 && room.lightsOn === 0 && (
-                <span className={styles.alert}>
-                  <span className="visually-hidden">{room.alertCount} avvisi</span>
+              {room.alertCount > 0 && (
+                <span className={styles.alert} title={`${room.alertCount} avvisi`}>
+                  <TriangleAlert size={14} aria-hidden="true" />
+                  {room.alertCount}
+                  <span className="visually-hidden"> avvisi</span>
                 </span>
               )}
             </NavLink>

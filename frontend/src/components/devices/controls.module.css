@@ -27,63 +27,75 @@
   border-color: var(--on-lamp);
 }
 
-/* Comandi tapparella */
-.segmented {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  border-radius: var(--radius-m);
-  background: var(--surface-sunken);
-}
-
-.segmented button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  min-height: 48px;
-  border: 0;
-  border-radius: var(--radius-s);
-  background: transparent;
-  color: var(--text);
-  font-weight: 500;
-  font-size: var(--text-s);
-}
-
-.segmented button:hover {
-  background: var(--surface-raised);
-}
-
-.segmented button:active {
-  background: var(--line);
-}
-
-.segmented button[data-emphasis='true'] {
-  background: var(--surface-raised);
-}
-
-.window {
+/* Tapparella: finestra con la parte coperta che scende con la posizione. */
+.shutterWindow {
   position: relative;
-  display: block;
-  width: 46px;
-  height: 56px;
-  border-radius: 8px;
-  border: 2px solid var(--line);
-  background: color-mix(in srgb, var(--cool) 30%, var(--surface));
+  height: 112px;
   overflow: hidden;
+  border-radius: var(--radius-s);
+  background:
+    radial-gradient(60% 90% at 70% 20%, rgb(108 168 255 / 0.22), transparent 70%),
+    linear-gradient(to bottom, #1d2a38, #15202b);
 }
 
 .blind {
   position: absolute;
-  inset: 0 0 auto 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: height 260ms ease;
   background: repeating-linear-gradient(
     to bottom,
-    var(--surface-raised) 0 5px,
-    var(--line) 5px 6px
+    var(--surface-raised) 0 11px,
+    var(--surface-hover) 11px 13px
   );
-  transition: height 600ms ease;
+  border-bottom: 2px solid var(--surface-sunken);
+}
+
+/* Comandi circolari, uguali per apri/stop/chiudi, touch-friendly. */
+.shutterCommands {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.shutterCommands button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+.commandIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--text);
+  transition: background-color 120ms ease, transform 80ms ease;
+}
+
+.shutterCommands button:hover .commandIcon {
+  background: var(--surface-hover);
+}
+
+.shutterCommands button:active .commandIcon {
+  transform: scale(0.94);
+}
+
+.shutterCommands button[data-emphasis='true'] .commandIcon {
+  border-color: rgb(108 168 255 / 0.5);
+  background: rgb(108 168 255 / 0.2);
+  color: var(--accent);
 }
 
 /* Valore centrale grande: percentuale della tapparella, temperatura attuale del termostato. */
@@ -139,11 +151,21 @@
   align-items: center;
 }
 
+/* Temperatura attuale: secondaria, sopra il valore desiderato che l'utente regola. */
+.current {
+  margin: 0;
+  text-align: center;
+  font-size: var(--text-s);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .targetValue {
-  font-size: var(--text-xl);
+  font-size: var(--text-3xl);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
 .chips {

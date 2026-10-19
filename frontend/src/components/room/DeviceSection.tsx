@@ -7,7 +7,10 @@ export function DeviceSection({ title, devices }: { title: string; devices: Devi
   if (devices.length === 0) return null;
   return (
     <section className={styles.section} aria-label={title}>
-      <h2 className={styles.title}>{title}</h2>
+      <h2 className={styles.title}>
+        {title}
+        <span className={styles.count}>{devices.length}</span>
+      </h2>
       <div className={styles.grid}>
         {devices.map((device) => (
           <DeviceTile key={device.id} device={device} />

@@ -10,35 +10,58 @@
 .item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  min-height: 52px;
-  padding: 0 var(--space-3);
+  gap: var(--space-4);
+  min-height: var(--touch);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
   border-radius: var(--radius-m);
-  font-size: var(--text-s);
+  background: var(--surface);
+  transition: background-color 120ms ease;
 }
 
 .item:hover {
-  background: var(--surface);
+  background: var(--surface-raised);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-s);
+  font-weight: 500;
+}
+
+.severity {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.chevron {
+  flex: none;
+  color: var(--text-faint);
 }
 
 .marker {
   flex: none;
   width: 10px;
   height: 10px;
-  border-radius: 3px;
+  border-radius: 50%;
 }
 
 .INFO {
-  background: var(--warn);
+  background: var(--text-faint);
 }
 
 .WARNING {
-  background: var(--alert);
+  background: var(--warn);
 }
 
 .CRITICAL {
   background: var(--alert);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--alert) 30%, transparent);
 }
 
 .empty {

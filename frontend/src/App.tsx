@@ -3,9 +3,13 @@ import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastProvider } from './components/feedback/ToastProvider';
 import { AppShell } from './components/layout/AppShell';
+import { DevicesPage } from './pages/DevicesPage';
 import { HomePage } from './pages/HomePage';
+import { MorePage } from './pages/MorePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RoomPage } from './pages/RoomPage';
+import { RoomsPage } from './pages/RoomsPage';
+import { ScenesPage } from './pages/ScenesPage';
 
 export function createQueryClient() {
   return new QueryClient({
@@ -27,7 +31,11 @@ export function AppRoutes() {
     <AppShell>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/rooms" element={<RoomsPage />} />
         <Route path="/rooms/:roomId" element={<RoomPage />} />
+        <Route path="/scenes" element={<ScenesPage />} />
+        <Route path="/devices" element={<DevicesPage />} />
+        <Route path="/more" element={<MorePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AppShell>

@@ -7,12 +7,20 @@ interface QuickActionProps {
   onClick: () => void;
   busy?: boolean;
   disabled?: boolean;
+  /** "danger" solo per azioni globali critiche (es. spegni tutto). */
+  tone?: 'neutral' | 'danger';
 }
 
 /** Pulsante d'azione grande e touch-friendly (es. "Spegni tutto"). */
-export function QuickAction({ label, icon, onClick, busy = false, disabled = false }: QuickActionProps) {
+export function QuickAction({ label, icon, onClick, busy = false, disabled = false, tone = 'neutral' }: QuickActionProps) {
   return (
-    <button type="button" className={styles.action} onClick={onClick} disabled={disabled || busy} aria-busy={busy}>
+    <button
+      type="button"
+      className={`${styles.action} ${tone === 'danger' ? styles.danger : ''}`}
+      onClick={onClick}
+      disabled={disabled || busy}
+      aria-busy={busy}
+    >
       {icon && <span className={styles.icon} aria-hidden="true">{icon}</span>}
       <span>{label}</span>
     </button>

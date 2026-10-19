@@ -82,16 +82,16 @@ button.header:active:not(:disabled) .icon {
   gap: var(--space-3);
 }
 
-/* Luce accesa: accent tenue sulla card, mai pieno né al neon. */
+/* Luce accesa: ambra tenue sulla card e sull'icona, mai pieno né al neon. */
 .lit {
   background: var(--lamp-tint);
-  border-color: rgb(108 168 255 / 0.3);
+  border-color: rgb(245 178 92 / 0.22);
   box-shadow: var(--shadow-lamp);
 }
 
 .lit .icon {
-  background: rgb(108 168 255 / 0.22);
-  color: var(--accent);
+  background: rgb(245 178 92 / 0.2);
+  color: var(--light-soft);
 }
 
 /* Presa/interruttore acceso. */

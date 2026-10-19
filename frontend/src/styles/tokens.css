@@ -17,10 +17,16 @@
   --text-muted: #a7afb7;
   --text-faint: #727a82;
 
-  --accent: #6ca8ff;         /* selezione, controlli interattivi, stato attivo */
-  --lamp: var(--accent);
-  --lamp-tint: rgb(108 168 255 / 0.14); /* sfondo tenue di una card attiva */
-  --on-lamp: var(--text);
+  --accent: #6ca8ff;         /* selezione, controlli interattivi, tapparelle, azioni neutre */
+
+  /* Luce accesa: ambra caldo, solo per luce/atmosfera/comfort. */
+  --light: #f5b25c;
+  --light-soft: #ffd29a;
+  --light-tint: rgb(245 178 92 / 0.07);     /* sfondo tenue di una card con luce accesa */
+  --light-glow: rgb(245 178 92 / 0.22);
+  --lamp: var(--light);
+  --lamp-tint: var(--light-tint);
+  --on-lamp: #1a1204;
   --plug: #6fd08c;           /* presa/interruttore acceso */
   --on-plug: #0c2016;
   --heat: #f29a6b;
@@ -57,7 +63,7 @@
 
   --shadow-card: none;
   --shadow-float: 0 18px 40px -16px rgb(0 0 0 / 0.75);
-  --shadow-lamp: 0 0 0 1px rgb(108 168 255 / 0.35);
+  --shadow-lamp: 0 0 0 1px rgb(245 178 92 / 0.28), 0 12px 32px -18px var(--light-glow);
 
   --touch: 56px;
   --rail-width: 220px;
@@ -66,7 +72,7 @@
 
 @media (max-width: 760px) {
   :root {
-    --bottom-nav-height: 68px;
+    --bottom-nav-height: 76px;
     --text-2xl: 2.25rem;
     --text-3xl: 3.25rem;
   }
