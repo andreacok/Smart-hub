@@ -67,6 +67,9 @@ export interface Device {
 export interface RoomSummary {
   id: string;
   name: string;
+  /** URL della fotografia personalizzata (versionato). Assente: si usa la foto predefinita. */
+  imageUrl?: string;
+  customImage?: boolean;
   deviceCount: number;
   onlineCount: number;
   activeCount: number;
@@ -174,4 +177,12 @@ export interface ApiErrorBody {
   code: string;
   message: string;
   path?: string;
+}
+
+/** Risposta di upload/ripristino della fotografia di una stanza. */
+export interface RoomImage {
+  roomId: string;
+  customImage: boolean;
+  imageUrl?: string;
+  updatedAt?: string;
 }

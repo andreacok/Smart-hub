@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeRoomName, resolveRoomImage, roomImageKeyFor } from './roomImages';
+import { normalizeRoomName, resolveRoomImage, resolveRoomPhoto, roomImageKeyFor } from './roomImages';
 
 describe('normalizeRoomName', () => {
   it('rimuove spazi ai bordi, accenti e maiuscole', () => {
@@ -60,5 +60,28 @@ describe('resolveRoomImage', () => {
   it('espone le posizioni di crop configurate', () => {
     expect(resolveRoomImage('Salotto').position.mobile).toBe('35% 50%');
     expect(resolveRoomImage('Ripostiglio').position).toEqual({});
+  });
+});
+
+describe('resolveRoomPhoto', () => {
+  it('usa la foto personalizzata quando esiste, indipendentemente dal nome', () => {
+    const photo = resolveRoomPhoto({ name: 'Ripostiglio', imageUrl: '/api/rooms/x/image/content?v=1' });
+    expect(photo).toEqual({ src: '/api/rooms/x/image/content?v=1', position: {}, custom: true });
+  });
+
+  it('usa la foto predefinita della stanza se non esiste una personalizzata', () => {
+    const photo = resolveRoomPhoto({ name: 'Salotto' });
+    expect(photo.custom).toBe(false);
+    expect(photo.src).toBe(resolveRoomImage('Salotto').src);
+  });
+
+  it('usa default-room per una stanza sconosciuta senza foto personalizzata', () => {
+    const photo = resolveRoomPhoto({ name: 'Ripostiglio', imageUrl: null });
+    expect(photo.custom).toBe(false);
+    expect(photo.src).toBe(resolveRoomImage('Ripostiglio').src);
+  });
+
+  it('una stringa vuota non è una foto personalizzata', () => {
+    expect(resolveRoomPhoto({ name: 'Cucina', imageUrl: '' }).custom).toBe(false);
   });
 });

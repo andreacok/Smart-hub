@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import type { RoomSummary } from '../../api/types';
-import { resolveRoomImage } from '../../config/roomImages';
+import { resolveRoomPhoto } from '../../config/roomImages';
 import { formatPercent, formatTemperature, pluralize } from '../../lib/format';
 import { StatusBadge } from '../common/StatusBadge';
 import styles from './RoomCard.module.css';
@@ -11,11 +11,11 @@ const MAX_DETAILS = 2;
 
 /** Card di una stanza: foto reale, nome, temperatura e stato aggregato sopra uno scrim. Apre la stanza. */
 export function RoomCard({ room }: { room: RoomSummary }) {
-  const image = resolveRoomImage(room.name);
+  const photo = resolveRoomPhoto(room);
   const imageStyle = {
-    '--pos-desktop': image.position.desktop ?? 'center',
-    '--pos-tablet': image.position.tablet ?? image.position.desktop ?? 'center',
-    '--pos-mobile': image.position.mobile ?? image.position.tablet ?? 'center',
+    '--pos-desktop': photo.position.desktop ?? 'center',
+    '--pos-tablet': photo.position.tablet ?? photo.position.desktop ?? 'center',
+    '--pos-mobile': photo.position.mobile ?? photo.position.tablet ?? 'center',
   } as CSSProperties;
 
   const details: string[] = [];
@@ -33,7 +33,7 @@ export function RoomCard({ room }: { room: RoomSummary }) {
 
   return (
     <Link to={`/rooms/${encodeURIComponent(room.id)}`} className={`${styles.card} ${lit ? styles.lit : ''}`}>
-      <img className={styles.photo} style={imageStyle} src={image.src} alt="" />
+      <img className={styles.photo} style={imageStyle} src={photo.src} alt="" />
       <div className={styles.body}>
         <div className={styles.head}>
           <h3 className={styles.name}>{room.name}</h3>

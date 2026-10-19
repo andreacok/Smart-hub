@@ -66,6 +66,27 @@
   background: var(--surface-raised);
 }
 
+/* Cambio foto: discreto, in alto a destra, coerente con il pulsante indietro. */
+.edit {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--touch);
+  height: var(--touch);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgb(17 19 21 / 0.55);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+}
+
+.edit:hover {
+  background: var(--surface-raised);
+}
+
 .copy {
   position: relative;
   z-index: 1;
@@ -145,26 +166,38 @@
     object-position: var(--pos-mobile, center);
   }
 
-  .back {
+  .back,
+  .edit {
     top: var(--space-3);
-    left: var(--space-3);
     width: 48px;
     height: 48px;
+  }
+
+  .back {
+    left: var(--space-3);
+  }
+
+  .edit {
+    right: var(--space-3);
   }
 
   .title {
     font-size: var(--text-xl);
   }
 
-  .copy {
-    max-width: 100%;
+  /* Su smartphone il pannello clima sta in basso a destra: in alto c'è il pulsante di modifica. */
+  .climate {
+    right: var(--space-3);
+    bottom: var(--space-3);
+    padding: var(--space-2) var(--space-3);
   }
 
-  .climate {
-    top: var(--space-3);
-    right: var(--space-3);
-    bottom: auto;
-    padding: var(--space-2) var(--space-3);
+  .copy {
+    max-width: 56%;
+  }
+
+  .facts {
+    font-size: var(--text-xs);
   }
 
   .climateValue {

@@ -103,3 +103,25 @@ export function resolveRoomImage(name: string | null | undefined): RoomImage {
   const { key, isFallback } = roomImageKeyFor(name);
   return { key, src: SOURCES[key], position: POSITIONS[key] ?? {}, isFallback };
 }
+
+/** Fotografia effettiva di una stanza: personalizzata se presente, altrimenti quella predefinita. */
+export interface RoomPhoto {
+  src: string;
+  position: RoomImagePosition;
+  /** true se la foto è quella caricata dall'utente. */
+  custom: boolean;
+}
+
+/**
+ * Priorità: foto personalizzata (imageUrl dal backend, legata al roomId)
+ *        → foto predefinita della stanza (resolver per nome)
+ *        → default-room.webp (nomi sconosciuti).
+ * Il nome serve solo per il fallback predefinito: la foto custom non dipende dal nome.
+ */
+export function resolveRoomPhoto(room: { name: string; imageUrl?: string | null }): RoomPhoto {
+  if (room.imageUrl) {
+    return { src: room.imageUrl, position: {}, custom: true };
+  }
+  const builtIn = resolveRoomImage(room.name);
+  return { src: builtIn.src, position: builtIn.position, custom: false };
+}
