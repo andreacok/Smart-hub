@@ -257,6 +257,18 @@ export interface Scene {
   icon?: string;
 }
 
+/** Scene manuali (routine) oppure regole con trigger (automazioni): SmartThings le espone con API distinte. */
+export type RoutineType = 'MANUAL_ROUTINE' | 'AUTOMATION';
+
+/** Routine o automazione della location SmartThings. */
+export interface Routine {
+  id: string;
+  name: string;
+  type: RoutineType;
+  /** True quando SmartThings permette di eseguirla a richiesta: solo allora compare il pulsante Esegui. */
+  manuallyExecutable: boolean;
+}
+
 export interface HomeSummary {
   devicesTotal: number;
   devicesOnline: number;

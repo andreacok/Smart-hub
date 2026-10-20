@@ -21,7 +21,13 @@ public interface SmartThingsApi {
 
     void executeCommands(String deviceId, List<StCommand> commands);
 
+    /** Scene manuali: nell'app SmartThings compaiono come routine senza trigger. */
     List<StScene> listScenes(String locationId);
 
     void executeScene(String sceneId);
+
+    /** Regole (automazioni con trigger). Nell'app compaiono come automazioni. */
+    List<StRule> listRules(String locationId);
+
+    void executeRule(String ruleId, String locationId);
 }

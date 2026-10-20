@@ -10,6 +10,7 @@ import com.smarthub.smartthings.api.StHealth;
 import com.smarthub.smartthings.api.StLocation;
 import com.smarthub.smartthings.api.StPage;
 import com.smarthub.smartthings.api.StRoom;
+import com.smarthub.smartthings.api.StRule;
 import com.smarthub.smartthings.api.StScene;
 import com.smarthub.smartthings.error.SmartThingsError;
 import com.smarthub.smartthings.error.SmartThingsErrorMapper;
@@ -53,6 +54,8 @@ public class LiveSmartThingsApi implements SmartThingsApi {
     private static final ParameterizedTypeReference<StPage<StDevice>> DEVICES = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<StPage<StScene>> SCENES = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<StPage<StRule>> RULES = new ParameterizedTypeReference<>() {
     };
 
     private final WebClient webClient;
@@ -118,6 +121,21 @@ public class LiveSmartThingsApi implements SmartThingsApi {
     public void executeScene(String sceneId) {
         execute(SmartThingsOperation.SCENE, null, "POST /scenes/" + sceneId + "/execute", false,
                 client -> client.post().uri("/scenes/{id}/execute", sceneId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(Map.of())
+                        .retrieve().toBodilessEntity());
+    }
+
+    @Override
+    public List<StRule> listRules(String locationId) {
+        return getAllPages("/rules?locationId=" + locationId, RULES);
+    }
+
+    @Override
+    public void executeRule(String ruleId, String locationId) {
+        // Come per i comandi, l'esecuzione di una regola non viene ripetuta: potrebbe far scattare due volte le azioni.
+        execute(SmartThingsOperation.RULE, null, "POST /rules/" + ruleId + "/execute", false,
+                client -> client.post().uri("/rules/{id}/execute?locationId={loc}", ruleId, locationId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(Map.of())
                         .retrieve().toBodilessEntity());

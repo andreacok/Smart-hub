@@ -11,6 +11,7 @@ import com.smarthub.smartthings.api.StDeviceStatus;
 import com.smarthub.smartthings.api.StHealth;
 import com.smarthub.smartthings.api.StLocation;
 import com.smarthub.smartthings.api.StRoom;
+import com.smarthub.smartthings.api.StRule;
 import com.smarthub.smartthings.api.StScene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +45,12 @@ public class MockSmartThingsApi implements SmartThingsApi {
     private final List<StRoom> rooms = new ArrayList<>();
     private final Map<String, MockDevice> devices = new LinkedHashMap<>();
     private final Map<String, MockScene> scenes = new LinkedHashMap<>();
+    private final Map<String, MockRule> rules = new LinkedHashMap<>();
 
     private record MockScene(StScene scene, Function<MockDevice, List<StCommand>> commands) {
+    }
+
+    private record MockRule(StRule rule, Function<MockDevice, List<StCommand>> commands) {
     }
 
     public MockSmartThingsApi(SmartThingsProperties.Mock config) {
@@ -121,10 +126,31 @@ public class MockSmartThingsApi implements SmartThingsApi {
             throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.SCENE, null, 404,
                     SmartThingsErrorMapper.simulatedBody("Scena non trovata: " + sceneId), null));
         }
+        applyToDevices(scene.commands());
+    }
+
+    @Override
+    public List<StRule> listRules(String locationId) {
+        simulateLatency();
+        return rules.values().stream().map(MockRule::rule).toList();
+    }
+
+    @Override
+    public void executeRule(String ruleId, String locationId) {
+        simulateLatency();
+        MockRule rule = rules.get(ruleId);
+        if (rule == null) {
+            throw new SmartThingsException(SmartThingsErrorMapper.fromHttp(SmartThingsOperation.RULE, null, 404,
+                    SmartThingsErrorMapper.simulatedBody("Regola non trovata: " + ruleId), null));
+        }
+        applyToDevices(rule.commands());
+    }
+
+    private void applyToDevices(Function<MockDevice, List<StCommand>> commands) {
         synchronized (this) {
             for (MockDevice device : devices.values()) {
                 if (device.online()) {
-                    scene.commands().apply(device).forEach(c -> device.apply(c, clock.instant()));
+                    commands.apply(device).forEach(c -> device.apply(c, clock.instant()));
                 }
             }
         }
@@ -282,6 +308,12 @@ public class MockSmartThingsApi implements SmartThingsApi {
             }
             return List.of();
         });
+
+        // Regole (automazioni): nell'app compaiono come automazioni, non come routine manuali
+        rule("rule-luce-corridoio", "Luce corridoio al movimento", d -> d.id().equals("corridoio-luce")
+                ? List.of(StCommand.of(SWITCH, "on")) : List.of());
+        rule("rule-chiudi-tapparelle", "Chiudi tapparelle la sera", d -> d.has(WINDOW_SHADE)
+                ? List.of(StCommand.of(WINDOW_SHADE, "close")) : List.of());
     }
 
     private void room(String id, String name) {
@@ -308,5 +340,9 @@ public class MockSmartThingsApi implements SmartThingsApi {
 
     private void scene(String id, String name, String icon, Function<MockDevice, List<StCommand>> commands) {
         scenes.put(id, new MockScene(new StScene(id, name, icon, LOCATION_ID), commands));
+    }
+
+    private void rule(String id, String name, Function<MockDevice, List<StCommand>> commands) {
+        rules.put(id, new MockRule(new StRule(id, name), commands));
     }
 }
