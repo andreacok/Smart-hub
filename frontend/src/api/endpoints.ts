@@ -6,6 +6,7 @@ import type {
   Home,
   RoomDetail,
   RoomSummary,
+  Routine,
   Scene,
   SystemStatus,
 } from './types';
@@ -20,11 +21,13 @@ export const api = {
   devices: (signal?: AbortSignal) => get<Device[]>('/api/devices', signal),
   device: (deviceId: string, signal?: AbortSignal) => get<Device>(`/api/devices/${enc(deviceId)}`, signal),
   scenes: (signal?: AbortSignal) => get<Scene[]>('/api/scenes', signal),
+  routines: (signal?: AbortSignal) => get<Routine[]>('/api/routines', signal),
   systemStatus: (signal?: AbortSignal) => get<SystemStatus>('/api/system/status', signal),
 
   sendCommand: (deviceId: string, command: DeviceCommand) =>
     post<Device>(`/api/devices/${enc(deviceId)}/commands`, command),
   executeScene: (sceneId: string) => post<void>(`/api/scenes/${enc(sceneId)}/execute`),
+  executeRoutine: (routineId: string) => post<void>(`/api/routines/${enc(routineId)}/execute`),
   roomAllOff: (roomId: string) => post<ActionResult>(`/api/rooms/${enc(roomId)}/actions/all-off`),
   homeLightsOff: () => post<ActionResult>('/api/home/actions/lights-off'),
 };

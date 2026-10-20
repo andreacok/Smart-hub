@@ -5,5 +5,6 @@ public enum SmartThingsOperation {
     READ,
     COMMAND,
     SCENE,
+    RULE,
     AUTH
 }
